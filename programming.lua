@@ -11,12 +11,15 @@ local function gotoGame()
   composer.gotoScene("game", {time=800, effect="crossFade"})
 end
 
-local function goToInstructions()
-	composer.gotoScene("instructions", {time=800, effect="crossFade"})
+local function setReaction(event)
+  local requiredReaction = event.target.text
+  -- print(requiredReaction)
+  if(requiredReaction == "Nill") then
+    bobReactionTo["clown"] = nil
+  else
+    bobReactionTo["clown"] = "jump"
+  end
 end
-
-
-
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -32,19 +35,18 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	-- local title = display.newImageRect( sceneGroup,"title.png", 500, 80 )
-	-- title.x = display.contentCenterX
-	-- title.y = 200
+  local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 500, native.systemFont, 44)
+  playButton:setFillColor(0, 0, 0)
 
+	local jumpButton = display.newText(sceneGroup, "Jump", display.contentCenterX, 700, native.systemFont, 44)
+	jumpButton:setFillColor(0, 0, 0)
 
-	local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 700, native.systemFont, 44)
-	playButton:setFillColor(0, 0, 0)
-
-	local highScoresButton = display.newText( sceneGroup, "Instructions", display.contentCenterX, 810, native.systemFont, 44 )
-	highScoresButton:setFillColor(0, 0, 0)
+	local nillButton = display.newText( sceneGroup, "Nill", display.contentCenterX, 810, native.systemFont, 44 )
+	nillButton:setFillColor(0, 0, 0)
 
 	playButton:addEventListener("tap", gotoGame)
-	highScoresButton:addEventListener("tap", goToInstructions)
+  jumpButton:addEventListener("tap", setReaction)
+  nillButton:addEventListener("tap", setReaction)
 
 end
 
