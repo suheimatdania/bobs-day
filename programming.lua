@@ -14,7 +14,7 @@ end
 local function setReaction(event)
   local requiredReaction = event.target.text
   -- print(requiredReaction)
-  if(requiredReaction == "Nill") then
+  if(requiredReaction ~= "Jump") then
     bobReactionTo["clown"] = nil
   else
     bobReactionTo["clown"] = "jump"
@@ -35,13 +35,16 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-  local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 500, native.systemFont, 44)
+  local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 300, native.systemFont, 44)
   playButton:setFillColor(0, 0, 0)
+
+  local questionText = display.newText(sceneGroup, "If the clown jumps, then bob must...", display.contentCenterX, 500, native.systemFont, 44)
+  questionText:setFillColor(0, 0, 0)
 
 	local jumpButton = display.newText(sceneGroup, "Jump", display.contentCenterX, 700, native.systemFont, 44)
 	jumpButton:setFillColor(0, 0, 0)
 
-	local nillButton = display.newText( sceneGroup, "Nill", display.contentCenterX, 810, native.systemFont, 44 )
+	local nillButton = display.newText( sceneGroup, "Not do anything", display.contentCenterX, 810, native.systemFont, 44 )
 	nillButton:setFillColor(0, 0, 0)
 
 	playButton:addEventListener("tap", gotoGame)

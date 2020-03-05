@@ -88,7 +88,7 @@ local sheetOptions =
           height = 270,
           displayWidth = 278,
           displayHeight = 242,
-          name = "dog",
+          name = "sun",
           displayX = -150,
           displayY = 150
         },
@@ -119,15 +119,33 @@ local function goToProgramming()
   composer.gotoScene("programming", {time=800, effect="crossFade"})
 end
 
+-- swaps an image for another one in the same position
+local function switchImage(oldImage, imageFile, width, height)
+-- local function switchImage(component)
+  print("entered switchImage")
+  local newImage = display.newImageRect(mainGroup, imageFile, width, height)
+  newImage.x = oldImage.x
+  newImage.y = oldImage.y
+  oldImage:removeSelf()
+  oldImage = nil
+end
+
 -- function which handles what happens when an object on screen is tapped on
 local function onTap(event)
-  local component = event.target
-  local objectTappedOn = component.name
+  local object = event.target
+  local objectTappedOn = object.name
   -- make object which was tapped do its thing
   if objectTappedOn == "clown" then
-    component:applyLinearImpulse( 0, -10, component.x, component.y )
+    object:applyLinearImpulse( 0, -10, object.x, object.y )
   elseif objectTappedOn == "bus" then
-    component:applyLinearImpulse( 0, -2, component.x, component.y )
+    object:applyLinearImpulse( 0, -2, object.x, object.y )
+  elseif objectTappedOn == "sun" then
+    -- switch sun with cloudy
+    local objectWidth = 276
+    local objectHeight = 242
+    switchImage(object, "cloud.jpg", objectWidth, objectHeight)
+    -- switchImage(object)
+
   end
 --  Bob's reaction part
   if childCoded == true then
@@ -135,7 +153,7 @@ local function onTap(event)
 
       -- local reaction = objectsOnScreen[f].bobReaction
       local reaction = bobReactionTo[objectTappedOn]
-      print(reaction)
+      -- print(reaction)
       if reaction ~= nil then
         if reaction == "jump" then
            bob:applyLinearImpulse(0, -2, bob.x, bob.y )
@@ -193,7 +211,7 @@ function scene:create( event )
     objectsOnScreen[#objectsOnScreen+1]=objectToDisplay
     -- adding the object and bob's reaction to it to the bobReactionTo table
     bobReactionTo[#bobReactionTo+1] = name
-    bobReactionTo[name] = "jump"
+    bobReactionTo[name] = "nil"
     -- adding phsyics
     addPhysics(objectToDisplay)
   end
