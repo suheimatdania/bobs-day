@@ -11,6 +11,36 @@ local physics = require("physics")
 physics.start()
 
 -- configuring the image sheet to be used
+local bobOptions =
+{
+    frames =
+    {
+        {   -- 1) normal bob
+            x = 0,
+            y = 0,
+            width = 366,
+            height = 530,
+            name = "normalBob"
+        },
+        {   -- 2) sad bob
+            x = 368,
+            y = 78,
+            width = 544,
+            height = 800,
+            name = "sadBob",
+        },
+        { --3) speaking bob
+            x = 902,
+            y = 82,
+            width = 544,
+            height = 800,
+            name = "speakingBob"
+        }
+
+    }
+}
+
+-- configuring the image sheet to be used
 local sheetOptions =
 {
     frames =
@@ -92,18 +122,38 @@ local sheetOptions =
           displayX = -150,
           displayY = 150
         },
+        {-- 8 cloud
+          x = 1164,
+          y = 0,
+          width = 225,
+          height = 292,
+          displayWidth = 278,
+          displayHeight = 242,
+          name = "cloud",
+          displayX = -150,
+          displayY = 150,
+          isReplacement = true
+        }
+        -- 9 sad bobbo
+
+        -- 10 clown2
+
+
 
     }
 }
 
 local objectSheet = graphics.newImageSheet("objects.png", sheetOptions)
+local bobSheet = graphics.newImageSheet( "bobSprite.png", bobOptions)
 
 -- initialising variables
 local clown, bus
 local bob
 local playButton
 local objectsOnScreen = {}
+local bobsOnScreen = {}
 local childCoded = true
+local currentBob = 1 -- keeps track of which bob is currently displayed
 -- dictionary storing each object's name and bob's reaction to it
 -- this dictionary will be added to when the objects are added to the screen
 -- bob's reaction will be initialised to nil at the beginning
@@ -119,16 +169,6 @@ local function goToProgramming()
   composer.gotoScene("programming", {time=800, effect="crossFade"})
 end
 
--- swaps an image for another one in the same position
-local function switchImage(oldImage, imageFile, width, height)
--- local function switchImage(component)
-  print("entered switchImage")
-  local newImage = display.newImageRect(mainGroup, imageFile, width, height)
-  newImage.x = oldImage.x
-  newImage.y = oldImage.y
-  oldImage:removeSelf()
-  oldImage = nil
-end
 
 -- function which handles what happens when an object on screen is tapped on
 local function onTap(event)
@@ -140,13 +180,14 @@ local function onTap(event)
   elseif objectTappedOn == "bus" then
     object:applyLinearImpulse( 0, -2, object.x, object.y )
   elseif objectTappedOn == "sun" then
-    -- switch sun with cloudy
-    local objectWidth = 276
-    local objectHeight = 242
-    switchImage(object, "cloud.jpg", objectWidth, objectHeight)
-    -- switchImage(object)
-
+    object.isVisible = false
+    objectsOnScreen[8].isVisible = true
+  elseif objectTappedOn == "cloud" then
+    object.isVisible = false
+    objectsOnScreen[7].isVisible = true
   end
+
+
 --  Bob's reaction part
   if childCoded == true then
     -- for f=1, #objectsOnScreen do
@@ -156,7 +197,7 @@ local function onTap(event)
       -- print(reaction)
       if reaction ~= nil then
         if reaction == "jump" then
-           bob:applyLinearImpulse(0, -2, bob.x, bob.y )
+           bobsOnScreen[currentBob]:applyLinearImpulse(0, -2, bobsOnScreen[currentBob].x, bobsOnScreen[currentBob].y )
         end
       end
     -- end
@@ -166,7 +207,7 @@ end
 -- function which adds physics element to each object to be displayed
 local function addPhysics(objectToAddTo)
   if objectToAddTo.name == "bus" then
-    physics.addBody( objectToAddTo, "dynamic", {radius = 90, bounce = 0} )
+    physics.addBody( objectToAddTo, "dynamic", {radius = 70, bounce = 0} )
   elseif objectToAddTo.name == "clown" then
     physics.addBody( objectToAddTo, "dynamic", {radius = 185, bounce = 0})
   end
@@ -203,25 +244,42 @@ function scene:create( event )
     -- display them according to info from sheetOptions
     local objectInfo = sheetOptions.frames[f]
     local objectToDisplay = display.newImageRect(mainGroup, objectSheet, f, objectInfo.displayWidth, objectInfo.displayHeight)
+    if(objectInfo.isReplacement ~= nil) then -- so if it is a replacement image
+      objectToDisplay.isVisible = false -- hide it initially
+    end
     objectToDisplay.x = objectInfo.displayX
     objectToDisplay.y = objectInfo.displayY
     local name = objectInfo.name
     objectToDisplay.name = name
-    objectToDisplay.bobReaction = "jump" -- default bob's reaction should be none
     objectsOnScreen[#objectsOnScreen+1]=objectToDisplay
     -- adding the object and bob's reaction to it to the bobReactionTo table
     bobReactionTo[#bobReactionTo+1] = name
-    bobReactionTo[name] = "nil"
+    bobReactionTo[name] = "nil" -- default bob's reaction should be none
     -- adding phsyics
     addPhysics(objectToDisplay)
   end
 
   -- displaying main character bob on main group
-  bob = display.newImageRect( mainGroup, "bob.png", 180, 360 )
-  bob.x = display.contentCenterX + 80
-  bob.y = display.contentCenterY + 170
-  bob.name = "bob"
-  physics.addBody(bob, "dynamic", {radius = 185, bounce = 0})
+  for f=1, #bobOptions.frames do
+    -- display them according to info from sheetOptions
+    local bobInfo = bobOptions.frames[f]
+    local bobToDisplay = display.newImageRect(mainGroup, bobSheet, f, 328, 497)
+    if(bobInfo.name ~= "normalBob") then -- initially only display normal bob
+      bobToDisplay.isVisible = false
+    end
+    bobToDisplay.x = display.contentCenterX + 80
+    bobToDisplay.y = display.contentCenterY + 170
+    local name = bobInfo.name
+    bobToDisplay.name = name
+    bobsOnScreen[#bobsOnScreen+1] = bobToDisplay
+    -- adding phsyics
+    physics.addBody(bobToDisplay, "dynamic", {radius = 80, bounce = 0})
+  end
+  -- bob = display.newImageRect( mainGroup, "bob.png", 328, 497 )
+  -- bob.x = display.contentCenterX + 80
+  -- bob.y = display.contentCenterY + 170
+  -- bob.name = "bob"
+  -- physics.addBody(bob, "dynamic", {radius = 185, bounce = 0})
 
   beginButton = display.newText(mainGroup, "Begin", 900, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)
