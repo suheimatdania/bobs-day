@@ -163,7 +163,7 @@ _G.bobReactionTo = {}
 -- defer the actual creation of our three groups until we create the scene
 local backGroup
 local mainGroup
-local uiGroup
+local bobGroup
 
 local function goToProgramming()
   composer.gotoScene("programming", {time=800, effect="crossFade"})
@@ -185,22 +185,33 @@ local function onTap(event)
   elseif objectTappedOn == "cloud" then
     object.isVisible = false
     objectsOnScreen[7].isVisible = true
+    bobsOnScreen[currentBob].isVisible=false
+    bobsOnScreen[1].isVisible = true
+    currentBob = 1
   end
-
 
 --  Bob's reaction part
   if childCoded == true then
-    -- for f=1, #objectsOnScreen do
-
       -- local reaction = objectsOnScreen[f].bobReaction
       local reaction = bobReactionTo[objectTappedOn]
-      -- print(reaction)
+      print(reaction)
       if reaction ~= nil then
         if reaction == "jump" then
            bobsOnScreen[currentBob]:applyLinearImpulse(0, -2, bobsOnScreen[currentBob].x, bobsOnScreen[currentBob].y )
+        elseif reaction == "smile" then
+          bobsOnScreen[currentBob].isVisible = false
+          bobsOnScreen[1].isVisible = true
+          currentBob = 1
+        elseif reaction == "cry" then
+          bobsOnScreen[currentBob].isVisible = false
+          bobsOnScreen[2].isVisible = true
+          currentBob = 2
+        elseif reaction == "speak" then
+          bobsOnScreen[currentBob].isVisible = false
+          bobsOnScreen[3].isVisible = true
+          currentBob = 3
         end
       end
-    -- end
   end
 end
 
@@ -227,13 +238,13 @@ function scene:create( event )
   physics.pause()
 
   backGroup = display.newGroup()  -- Display group for the background image
-   sceneGroup:insert( backGroup )  -- Insert into the scene's view group
+  sceneGroup:insert( backGroup )  -- Insert into the scene's view group
 
-   mainGroup = display.newGroup()  -- Display group for the ship, asteroids, lasers, etc.
-   sceneGroup:insert( mainGroup )  -- Insert into the scene's view group
+  mainGroup = display.newGroup()  -- Display group for the ship, asteroids, lasers, etc.
+  sceneGroup:insert( mainGroup )  -- Insert into the scene's view group
 
-   uiGroup = display.newGroup()    -- Display group for UI objects like the score
-   sceneGroup:insert( uiGroup )    -- Insert into the scene's view group
+  bobGroup = display.newGroup()    -- Display group for UI objects like the score
+  sceneGroup:insert( bobGroup )    -- Insert into the scene's view group
 
   background = display.newImageRect( backGroup, "background2.jpg", 3500, 2300 )
   background.x = display.contentCenterX
@@ -263,7 +274,7 @@ function scene:create( event )
   for f=1, #bobOptions.frames do
     -- display them according to info from sheetOptions
     local bobInfo = bobOptions.frames[f]
-    local bobToDisplay = display.newImageRect(mainGroup, bobSheet, f, 328, 497)
+    local bobToDisplay = display.newImageRect(bobGroup, bobSheet, f, 328, 497)
     if(bobInfo.name ~= "normalBob") then -- initially only display normal bob
       bobToDisplay.isVisible = false
     end
@@ -275,11 +286,6 @@ function scene:create( event )
     -- adding phsyics
     physics.addBody(bobToDisplay, "dynamic", {radius = 80, bounce = 0})
   end
-  -- bob = display.newImageRect( mainGroup, "bob.png", 328, 497 )
-  -- bob.x = display.contentCenterX + 80
-  -- bob.y = display.contentCenterY + 170
-  -- bob.name = "bob"
-  -- physics.addBody(bob, "dynamic", {radius = 185, bounce = 0})
 
   beginButton = display.newText(mainGroup, "Begin", 900, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)

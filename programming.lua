@@ -11,14 +11,24 @@ local function gotoGame()
   composer.gotoScene("game", {time=800, effect="crossFade"})
 end
 
-local function setReaction(event)
+local function setReactionIf(event)
+  local requiredReaction = event.target.text
+  if(requiredReaction == "Jump") then
+    bobReactionTo["clown"] = "jump"
+  else
+    bobReactionTo["clown"] = nil
+  end
+end
+
+local function setReactionWhile(event)
   local requiredReaction = event.target.text
   -- print(requiredReaction)
-  if(requiredReaction ~= "Jump") then
-    bobReactionTo["clown"] = nil
+  if(requiredReaction == "Smile") then
+    bobReactionTo["sun"] = "smile"
   else
-    bobReactionTo["clown"] = "jump"
+    bobReactionTo["sun"] = "cry"
   end
+  print(bobReactionTo["sun"])
 end
 
 -- -----------------------------------------------------------------------------------
@@ -35,21 +45,33 @@ function scene:create( event )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-  local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 300, native.systemFont, 44)
+  local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
   playButton:setFillColor(0, 0, 0)
 
-  local questionText = display.newText(sceneGroup, "If the clown jumps, then bob must...", display.contentCenterX, 500, native.systemFont, 44)
-  questionText:setFillColor(0, 0, 0)
+  local ifText = display.newText(sceneGroup, "If the clown jumps, then bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
+  ifText:setFillColor(0, 0, 0)
 
-	local jumpButton = display.newText(sceneGroup, "Jump", display.contentCenterX, 700, native.systemFont, 44)
+	local jumpButton = display.newText(sceneGroup, "Jump", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
 	jumpButton:setFillColor(0, 0, 0)
 
-	local nillButton = display.newText( sceneGroup, "Not do anything", display.contentCenterX, 810, native.systemFont, 44 )
+	local nillButton = display.newText( sceneGroup, "Not do anything", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44 )
 	nillButton:setFillColor(0, 0, 0)
 
 	playButton:addEventListener("tap", gotoGame)
-  jumpButton:addEventListener("tap", setReaction)
-  nillButton:addEventListener("tap", setReaction)
+  jumpButton:addEventListener("tap", setReactionIf)
+  nillButton:addEventListener("tap", setReactionIf)
+
+  local whileText = display.newText(sceneGroup, "While the weather is bad, Bob will", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
+  whileText:setFillColor(0, 0, 0)
+
+  local smileButton = display.newText(sceneGroup, "Smile", display.contentCenterX, display.contentCenterY +100, native.systemFont, 44)
+  smileButton:setFillColor(0, 0, 0)
+
+  local sadButton = display.newText( sceneGroup, "Cry", display.contentCenterX, display.contentCenterY + 200, native.systemFont, 44 )
+  sadButton:setFillColor(0, 0, 0)
+
+  smileButton:addEventListener("tap", setReactionWhile)
+  sadButton:addEventListener("tap", setReactionWhile)
 
 end
 
