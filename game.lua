@@ -41,6 +41,26 @@ local bobOptions =
     }
 }
 
+local clownOptions =
+{
+  width = 364,
+  height = 560,
+  numFrames = 5
+}
+
+-- sequences table for clown
+local sequences_clown = {
+    -- consecutive frames sequence
+    {
+        name = "juggling",
+        start = 1,
+        count = 5,
+        time = 1200,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 -- configuring the image sheet to be used
 local sheetOptions =
 {
@@ -211,6 +231,7 @@ local sheetOptions =
 
 local objectSheet = graphics.newImageSheet("objects.png", sheetOptions)
 local bobSheet = graphics.newImageSheet( "bobSprite.png", bobOptions)
+local clownSheet = graphics.newImageSheet( "clown_sprite.png", clownOptions )
 
 -- initialising variables
 local clown, bus
@@ -220,6 +241,7 @@ local objectsOnScreen = {}
 local bobsOnScreen = {}
 local childCoded = true
 local currentBob = 1 -- keeps track of which bob is currently displayed
+local jugglingClown
 -- dictionary storing each object's name and bob's reaction to it
 -- this dictionary will be added to when the objects are added to the screen
 -- bob's reaction will be initialised to nil at the beginning
@@ -243,24 +265,11 @@ local function onTap(event)
   -- make object which was tapped do its thing
   if objectTappedOn == "clown" then
     -- make clown juggle
-      -- for f=1, 4 do
-        objectsOnScreen[1].isVisible = false
-        print("1")
-        objectsOnScreen[2].isVisible = true
-        -- socket.select(nil, nil, 0.2)
-        objectsOnScreen[2].isVisible = false
-        objectsOnScreen[3].isVisible = true
-        -- socket.select(nil, nil, 0.2)
-        objectsOnScreen[3].isVisible = false
-        objectsOnScreen[4].isVisible = true
-        -- socket.select(nil, nil, 4)
-        objectsOnScreen[4].isVisible = false
-        objectsOnScreen[5].isVisible = true
-        -- socket.select(nil, nil, 4)
-        objectsOnScreen[5].isVisible = false
-        objectsOnScreen[1].isVisible = true
-        -- socket.select(nil, nil, 4)
-      -- end
+    if jugglingClown.isPlaying ~= true then
+      jugglingClown:play()
+    else
+      jugglingClown:pause()
+    end
   elseif objectTappedOn == "bus" then
     object:applyLinearImpulse( 0, -2, object.x, object.y )
   elseif objectTappedOn == "sun" then
@@ -276,7 +285,6 @@ local function onTap(event)
 
 --  Bob's reaction part
   if childCoded == true then
-      -- local reaction = objectsOnScreen[f].bobReaction
       local reaction = bobReactionTo[objectTappedOn]
       -- print(reaction)
       if reaction ~= nil then
@@ -370,6 +378,11 @@ function scene:create( event )
     -- adding phsyics
     physics.addBody(bobToDisplay, "dynamic", {radius = 80, bounce = 0})
   end
+
+  jugglingClown = display.newSprite( clownSheet, sequences_clown )
+  jugglingClown.x = 160
+  jugglingClown.y = 400
+
 
   beginButton = display.newText(mainGroup, "Begin", 900, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)
