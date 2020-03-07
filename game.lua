@@ -7,6 +7,7 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+local socket = require("socket")
 local physics = require("physics")
 physics.start()
 
@@ -46,100 +47,165 @@ local sheetOptions =
     frames =
     {
         {   -- 1) clown
-            x = 1424,
-            y = 0,
-            width = 230,
-            height = 370,
+            x = 954,
+            y = 226,
+            width = 370,
+            height = 556,
             displayWidth = 230,
             displayHeight = 370,
             name = "clown",
             displayX = -90,
             displayY = 690
         },
-        {   -- 2) bus
-            x = 458,
+        {   -- 2) clown
+            x = 1322,
+            y = 224,
+            width = 370,
+            height = 556,
+            displayWidth = 230,
+            displayHeight = 370,
+            name = "clown", -- make it say just clown
+            displayX = -90,
+            displayY = 690,
+            isReplacement = true
+        },{   -- 3) clown
+            x = 1424,
             y = 0,
-            width = 424,
-            height = 236,
+            width = 370,
+            height = 556,
+            displayWidth = 230,
+            displayHeight = 370,
+            name = "clown",
+            displayX = -90,
+            displayY = 690,
+            isReplacement = true
+        },{   -- 4) clown
+            x = 362,
+            y = 782,
+            width = 370,
+            height = 556,
+            displayWidth = 230,
+            displayHeight = 370,
+            name = "clown",
+            displayX = -90,
+            displayY = 690,
+            isReplacement = true
+        },{   -- 5) clown
+            x = 729,
+            y = 781,
+            width = 370,
+            height = 556,
+            displayWidth = 230,
+            displayHeight = 370,
+            name = "clown",
+            displayX = -90,
+            displayY = 690,
+            isReplacement = true
+        },
+        {   -- 6) bus
+            x = 0,
+            y = 0,
+            width = 300,
+            height = 169,
             displayWidth = 270,
             displayHeight = 150,
             name = "bus",
             displayX = 700,
             displayY = 750
         },
-        { -- 3 )pond
-          x = 116,
-          y = 366,
-          width = 680,
-          height = 464,
-          displayWidth = 450,
-          displayHeight = 366,
+        { -- 7)pond
+          x = 505,
+          y = 236,
+          width = 380,
+          height = 297,
+          displayWidth = 380,
+          displayHeight = 309,
           name = "pond",
           displayX = 250,
           displayY = 850
         },
-        { -- 4) froggo
-            x = 0,
+        { -- 8) froggo
+            x = 300,
             y = 0,
-            width = 234,
-            height = 188,
+            width = 235,
+            height = 194,
             displayWidth = 124,
             displayHeight = 100,
             name = "frog",
             displayX = 120,
             displayY = 900
         },
-        { -- 5) speaker
-            x = 834,
-            y = 392,
-            width = 320,
-            height = 510,
+        { -- 9) froggo2
+            x = 300,
+            y = 0,
+            width = 235,
+            height = 194,
+            displayWidth = 124,
+            displayHeight = 100,
+            name = "frog2",
+            displayX = 120,
+            displayY = 900,
+            isReplacement = true
+        },
+        { -- 10) speaker
+            x = 1116,
+            y = 797,
+            width = 404,
+            height = 643,
             displayWidth = 150,
             displayHeight = 240,
             name = "speaker",
             displayX = 990,
             displayY = 800
         },
-        { -- 6 )doggo
-          x = 1164,
+        { -- 11 )doggo
+          x = 526,
           y = 0,
-          width = 225,
-          height = 292,
-          displayWidth = 190,
-          displayHeight = 240,
+          width = 242,
+          height = 210,
+          displayWidth = 203,
+          displayHeight = 200,
           name = "dog",
           displayX = 900,
           displayY = 900
         },
-        { -- 7 )sun
-          x = 881,
+        { -- 12 )doggo bark
+          x = 778,
           y = 0,
-          width = 278,
-          height = 270,
+          width = 242,
+          height = 205,
+          displayWidth = 203,
+          displayHeight = 200,
+          name = "dog2",
+          displayX = 900,
+          displayY = 900,
+          isReplacement = true
+        },
+        { -- 13)sun
+          x = 1024,
+          y = 0,
+          width = 228,
+          height = 213,
           displayWidth = 278,
           displayHeight = 242,
           name = "sun",
           displayX = -150,
           displayY = 150
         },
-        {-- 8 cloud
-          x = 1164,
-          y = 0,
-          width = 225,
-          height = 292,
-          displayWidth = 278,
+        {-- 14) cloud
+          x = 0,
+          y = 224,
+          width = 422,
+          height = 231,
+          displayWidth = 350,
           displayHeight = 242,
           name = "cloud",
-          displayX = -150,
+          displayX = -110,
           displayY = 150,
-          isReplacement = true
+          isReplacement = true,
+          secondX = 0,
+          secondY = 150
         }
-        -- 9 sad bobbo
-
-        -- 10 clown2
-
-
-
     }
 }
 
@@ -176,15 +242,33 @@ local function onTap(event)
   local objectTappedOn = object.name
   -- make object which was tapped do its thing
   if objectTappedOn == "clown" then
-    object:applyLinearImpulse( 0, -10, object.x, object.y )
+    -- make clown juggle
+      -- for f=1, 4 do
+        objectsOnScreen[1].isVisible = false
+        print("1")
+        objectsOnScreen[2].isVisible = true
+        -- socket.select(nil, nil, 0.2)
+        objectsOnScreen[2].isVisible = false
+        objectsOnScreen[3].isVisible = true
+        -- socket.select(nil, nil, 0.2)
+        objectsOnScreen[3].isVisible = false
+        objectsOnScreen[4].isVisible = true
+        -- socket.select(nil, nil, 4)
+        objectsOnScreen[4].isVisible = false
+        objectsOnScreen[5].isVisible = true
+        -- socket.select(nil, nil, 4)
+        objectsOnScreen[5].isVisible = false
+        objectsOnScreen[1].isVisible = true
+        -- socket.select(nil, nil, 4)
+      -- end
   elseif objectTappedOn == "bus" then
     object:applyLinearImpulse( 0, -2, object.x, object.y )
   elseif objectTappedOn == "sun" then
     object.isVisible = false
-    objectsOnScreen[8].isVisible = true
+    objectsOnScreen[14].isVisible = true -- fix after changing sprite
   elseif objectTappedOn == "cloud" then
     object.isVisible = false
-    objectsOnScreen[7].isVisible = true
+    objectsOnScreen[13].isVisible = true -- fix after changing sprite
     bobsOnScreen[currentBob].isVisible=false
     bobsOnScreen[1].isVisible = true
     currentBob = 1
@@ -194,7 +278,7 @@ local function onTap(event)
   if childCoded == true then
       -- local reaction = objectsOnScreen[f].bobReaction
       local reaction = bobReactionTo[objectTappedOn]
-      print(reaction)
+      -- print(reaction)
       if reaction ~= nil then
         if reaction == "jump" then
            bobsOnScreen[currentBob]:applyLinearImpulse(0, -2, bobsOnScreen[currentBob].x, bobsOnScreen[currentBob].y )
@@ -219,8 +303,8 @@ end
 local function addPhysics(objectToAddTo)
   if objectToAddTo.name == "bus" then
     physics.addBody( objectToAddTo, "dynamic", {radius = 70, bounce = 0} )
-  elseif objectToAddTo.name == "clown" then
-    physics.addBody( objectToAddTo, "dynamic", {radius = 185, bounce = 0})
+  -- elseif objectToAddTo.name == "clown" then
+  --   physics.addBody( objectToAddTo, "dynamic", {radius = 185, bounce = 0})
   end
 end
 
