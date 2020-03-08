@@ -11,7 +11,7 @@ local socket = require("socket")
 local physics = require("physics")
 physics.start()
 
--- configuring the image sheet to be used
+-- configuring the image sheet for bob to be used
 local bobOptions =
 {
     frames =
@@ -41,10 +41,11 @@ local bobOptions =
     }
 }
 
+-- for clown animation
 local clownOptions =
 {
-  width = 364,
-  height = 560,
+  width = 291,
+  height = 447,
   numFrames = 5
 }
 
@@ -61,6 +62,27 @@ local sequences_clown = {
     }
 }
 
+-- for dog animation
+local dogOptions =
+{
+  width = 242,
+  height = 208,
+  numFrames = 3
+}
+
+-- sequences table for clown
+local sequences_dog = {
+    -- consecutive frames sequence
+    {
+        name = "barking",
+        start = 1,
+        count = 4,
+        time = 2000,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 -- configuring the image sheet to be used
 local sheetOptions =
 {
@@ -68,61 +90,17 @@ local sheetOptions =
     {
         {   -- 1) clown
             x = 954,
-            y = 226,
+            y = 200,
             width = 370,
             height = 556,
-            displayWidth = 230,
-            displayHeight = 370,
+            displayWidth = 291,
+            displayHeight = 447,
             name = "clown",
             displayX = -90,
-            displayY = 690
+            displayY = 600,
+            isAnimation = true
         },
-        {   -- 2) clown
-            x = 1322,
-            y = 224,
-            width = 370,
-            height = 556,
-            displayWidth = 230,
-            displayHeight = 370,
-            name = "clown", -- make it say just clown
-            displayX = -90,
-            displayY = 690,
-            isReplacement = true
-        },{   -- 3) clown
-            x = 1424,
-            y = 0,
-            width = 370,
-            height = 556,
-            displayWidth = 230,
-            displayHeight = 370,
-            name = "clown",
-            displayX = -90,
-            displayY = 690,
-            isReplacement = true
-        },{   -- 4) clown
-            x = 362,
-            y = 782,
-            width = 370,
-            height = 556,
-            displayWidth = 230,
-            displayHeight = 370,
-            name = "clown",
-            displayX = -90,
-            displayY = 690,
-            isReplacement = true
-        },{   -- 5) clown
-            x = 729,
-            y = 781,
-            width = 370,
-            height = 556,
-            displayWidth = 230,
-            displayHeight = 370,
-            name = "clown",
-            displayX = -90,
-            displayY = 690,
-            isReplacement = true
-        },
-        {   -- 6) bus
+        {   -- 2) bus
             x = 0,
             y = 0,
             width = 300,
@@ -133,29 +111,29 @@ local sheetOptions =
             displayX = 700,
             displayY = 750
         },
-        { -- 7)pond
+        { -- 3)pond
           x = 505,
           y = 236,
           width = 380,
           height = 297,
-          displayWidth = 380,
-          displayHeight = 309,
+          displayWidth = 300,
+          displayHeight = 243,
           name = "pond",
-          displayX = 250,
-          displayY = 850
+          displayX = 180,
+          displayY = 900
         },
-        { -- 8) froggo
+        { -- 4) froggo
             x = 300,
             y = 0,
             width = 235,
             height = 194,
-            displayWidth = 124,
-            displayHeight = 100,
+            displayWidth = 200,
+            displayHeight = 161,
             name = "frog",
-            displayX = 120,
-            displayY = 900
+            displayX = 110,
+            displayY = 925
         },
-        { -- 9) froggo2
+        { -- 5) froggo2
             x = 300,
             y = 0,
             width = 235,
@@ -167,7 +145,7 @@ local sheetOptions =
             displayY = 900,
             isReplacement = true
         },
-        { -- 10) speaker
+        { -- 6) speaker
             x = 1116,
             y = 797,
             width = 404,
@@ -178,18 +156,19 @@ local sheetOptions =
             displayX = 990,
             displayY = 800
         },
-        { -- 11 )doggo
-          x = 526,
+        { -- 7)doggo
+          x = 538,
           y = 0,
           width = 242,
           height = 210,
-          displayWidth = 203,
-          displayHeight = 200,
+          displayWidth = 240,
+          displayHeight = 209,
           name = "dog",
-          displayX = 900,
-          displayY = 900
+          displayX = 700,
+          displayY = 900,
+          isAnimation = true
         },
-        { -- 12 )doggo bark
+        { -- 8)doggo bark
           x = 778,
           y = 0,
           width = 242,
@@ -201,7 +180,7 @@ local sheetOptions =
           displayY = 900,
           isReplacement = true
         },
-        { -- 13)sun
+        { -- 9)sun
           x = 1024,
           y = 0,
           width = 228,
@@ -212,7 +191,7 @@ local sheetOptions =
           displayX = -150,
           displayY = 150
         },
-        {-- 14) cloud
+        {-- 10) cloud
           x = 0,
           y = 224,
           width = 422,
@@ -232,16 +211,16 @@ local sheetOptions =
 local objectSheet = graphics.newImageSheet("objects.png", sheetOptions)
 local bobSheet = graphics.newImageSheet( "bobSprite.png", bobOptions)
 local clownSheet = graphics.newImageSheet( "clown_sprite.png", clownOptions )
+local dogSheet = graphics.newImageSheet( "dog_sprite.png", dogOptions )
 
 -- initialising variables
-local clown, bus
+-- local clown, bus
 local bob
 local playButton
 local objectsOnScreen = {}
 local bobsOnScreen = {}
 local childCoded = true
 local currentBob = 1 -- keeps track of which bob is currently displayed
-local jugglingClown
 -- dictionary storing each object's name and bob's reaction to it
 -- this dictionary will be added to when the objects are added to the screen
 -- bob's reaction will be initialised to nil at the beginning
@@ -257,6 +236,14 @@ local function goToProgramming()
   composer.gotoScene("programming", {time=800, effect="crossFade"})
 end
 
+local function spriteListener(event)
+  local thisSprite = event.target
+
+  if ( event.phase == "loop" ) then
+        -- thisSprite:setSequence( "fastRun" )  -- switch to "fastRun" sequence
+        thisSprite:pause()  -- play the new sequence
+    end
+end
 
 -- function which handles what happens when an object on screen is tapped on
 local function onTap(event)
@@ -265,22 +252,26 @@ local function onTap(event)
   -- make object which was tapped do its thing
   if objectTappedOn == "clown" then
     -- make clown juggle
-    if jugglingClown.isPlaying ~= true then
-      jugglingClown:play()
-    else
-      jugglingClown:pause()
+    if objectsOnScreen[1].isPlaying ~= true then -- if clown not already juggling
+      objectsOnScreen[1]:play()
+    else -- if the clown is already juggling
+      objectsOnScreen[1]:pause()
     end
+  elseif objectTappedOn == "dog" then
+    -- make dog bark
+    objectsOnScreen[7]:play()
   elseif objectTappedOn == "bus" then
     object:applyLinearImpulse( 0, -2, object.x, object.y )
   elseif objectTappedOn == "sun" then
     object.isVisible = false
-    objectsOnScreen[14].isVisible = true -- fix after changing sprite
+    objectsOnScreen[10].isVisible = true -- display cloud
   elseif objectTappedOn == "cloud" then
     object.isVisible = false
-    objectsOnScreen[13].isVisible = true -- fix after changing sprite
+    objectsOnScreen[9].isVisible = true -- display sun
     bobsOnScreen[currentBob].isVisible=false
     bobsOnScreen[1].isVisible = true
     currentBob = 1
+
   end
 
 --  Bob's reaction part
@@ -302,6 +293,10 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false
           bobsOnScreen[3].isVisible = true
           currentBob = 3
+        elseif reaction == "laugh" then
+          -- make bob laugh
+        elseif reaction == "cheer" then
+          -- make bob Cheer
         end
       end
   end
@@ -346,27 +341,43 @@ function scene:create( event )
   for f=1, #sheetOptions.frames do
     -- display them according to info from sheetOptions
     local objectInfo = sheetOptions.frames[f]
-    local objectToDisplay = display.newImageRect(mainGroup, objectSheet, f, objectInfo.displayWidth, objectInfo.displayHeight)
+    local name = objectInfo.name
+    local objectToDisplay
+    if objectInfo.isAnimation == nil then -- if not animation to display
+      objectToDisplay = display.newImageRect(mainGroup, objectSheet, f, objectInfo.displayWidth, objectInfo.displayHeight)
+    else
+      if name == "clown" then
+        objectToDisplay = display.newSprite( mainGroup, clownSheet, sequences_clown)
+      elseif name == "dog" then
+        objectToDisplay = display.newSprite( mainGroup, dogSheet, sequences_dog)
+        objectToDisplay:addEventListener( "sprite", spriteListener )
+      end
+      objectToDisplay.width = objectInfo.displayWidth
+      objectToDisplay.height = objectInfo.displayHeight
+    end
     if(objectInfo.isReplacement ~= nil) then -- so if it is a replacement image
       objectToDisplay.isVisible = false -- hide it initially
     end
     objectToDisplay.x = objectInfo.displayX
     objectToDisplay.y = objectInfo.displayY
-    local name = objectInfo.name
+
     objectToDisplay.name = name
+    -- add them to objects on screen array
     objectsOnScreen[#objectsOnScreen+1]=objectToDisplay
+
+
     -- adding the object and bob's reaction to it to the bobReactionTo table
     bobReactionTo[#bobReactionTo+1] = name
     bobReactionTo[name] = "nil" -- default bob's reaction should be none
     -- adding phsyics
-    addPhysics(objectToDisplay)
+    -- addPhysics(objectToDisplay)
   end
 
   -- displaying main character bob on main group
   for f=1, #bobOptions.frames do
     -- display them according to info from sheetOptions
     local bobInfo = bobOptions.frames[f]
-    local bobToDisplay = display.newImageRect(bobGroup, bobSheet, f, 328, 497)
+    local bobToDisplay = display.newImageRect(bobGroup, bobSheet, f, 362, 550)
     if(bobInfo.name ~= "normalBob") then -- initially only display normal bob
       bobToDisplay.isVisible = false
     end
@@ -376,23 +387,19 @@ function scene:create( event )
     bobToDisplay.name = name
     bobsOnScreen[#bobsOnScreen+1] = bobToDisplay
     -- adding phsyics
-    physics.addBody(bobToDisplay, "dynamic", {radius = 80, bounce = 0})
+    -- physics.addBody(bobToDisplay, "dynamic", {radius = 80, bounce = 0})
   end
 
-  jugglingClown = display.newSprite( clownSheet, sequences_clown )
-  jugglingClown.x = 160
-  jugglingClown.y = 400
 
-
-  beginButton = display.newText(mainGroup, "Begin", 900, 100, native.systemFont, 44)
+  beginButton = display.newText(mainGroup, "Begin programming bob!", 750, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)
 
-  -- temporary
-  local platform = display.newImageRect( backGroup, "platform.png", 1024, 250 )
-  platform.x = display.contentCenterX
-  platform.y = display.contentHeight-25
-  platform.name = "platform"
-  physics.addBody( platform, "static", {bounce = 0})
+  -- -- temporary
+  -- local platform = display.newImageRect( backGroup, "platform.png", 1024, 250 )
+  -- platform.x = display.contentCenterX
+  -- platform.y = display.contentHeight-25
+  -- platform.name = "platform"
+  -- physics.addBody( platform, "static", {bounce = 0})
   --
 
   -- adding event listeners to the bodies

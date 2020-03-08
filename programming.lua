@@ -11,12 +11,12 @@ local function gotoGame()
   composer.gotoScene("game", {time=800, effect="crossFade"})
 end
 
-local function setReactionIf(event)
+local function setReactionToClown(event)
   local requiredReaction = event.target.text
-  if(requiredReaction == "Jump") then
-    bobReactionTo["clown"] = "jump"
+  if(requiredReaction == "Laugh") then
+    bobReactionTo["clown"] = "laugh"
   else
-    bobReactionTo["clown"] = nil
+    bobReactionTo["clown"] = "cheer"
   end
 end
 
@@ -48,18 +48,18 @@ function scene:create( event )
   local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
   playButton:setFillColor(0, 0, 0)
 
-  local ifText = display.newText(sceneGroup, "If the clown jumps, then bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
-  ifText:setFillColor(0, 0, 0)
+  local clownText = display.newText(sceneGroup, "While the clown juggles, bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
+  clownText:setFillColor(0, 0, 0)
 
-	local jumpButton = display.newText(sceneGroup, "Jump", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
-	jumpButton:setFillColor(0, 0, 0)
+	local laughButton = display.newText(sceneGroup, "Laugh", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
+	laughButton:setFillColor(0, 0, 0)
 
-	local nillButton = display.newText( sceneGroup, "Not do anything", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44 )
+	local nillButton = display.newText( sceneGroup, "Cheer", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44 )
 	nillButton:setFillColor(0, 0, 0)
 
 	playButton:addEventListener("tap", gotoGame)
-  jumpButton:addEventListener("tap", setReactionIf)
-  nillButton:addEventListener("tap", setReactionIf)
+  laughButton:addEventListener("tap", setReactionToClown)
+  nillButton:addEventListener("tap", setReactionToClown)
 
   local whileText = display.newText(sceneGroup, "While the weather is bad, Bob will", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
   whileText:setFillColor(0, 0, 0)
