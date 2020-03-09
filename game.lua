@@ -19,28 +19,28 @@ local bobOptions =
         {   -- 1) smiley bob
             x = 0,
             y = 0,
-            width = 538,
+            width = 540,
             height = 960,
             name = "smileyBob"
         },
         {   -- 2) normal bob
-            x = 538,
+            x = 540,
             y = 0,
-            width = 538,
+            width = 540,
             height = 960,
             name = "normalBob",
         },
         {   -- 2) sad bob
-            x = 1076,
+            x = 1080,
             y = 0,
-            width = 538,
+            width = 540,
             height = 960,
             name = "sadBob",
         }
     }
 }
 
--- for bob crying animation
+-- for bob laughing animation
 local laughOptions =
 {
   width = 540,
@@ -48,7 +48,7 @@ local laughOptions =
   numFrames = 3
 }
 
--- sequences table for bob crying
+-- sequences table for bob laughing
 local sequences_laugh = {
     -- consecutive frames sequence
     {
@@ -56,6 +56,27 @@ local sequences_laugh = {
         start = 1,
         count = 3,
         time = 1200,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
+-- for bob yelling animation
+local yellOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 2
+}
+
+-- sequences table for bob crying
+local sequences_yell = {
+    -- consecutive frames sequence
+    {
+        name = "yelling",
+        start = 1,
+        count = 2,
+        time = 2200,
         loopCount = 0,
         loopDirection = "forward"
     }
@@ -234,6 +255,7 @@ local clownSheet = graphics.newImageSheet( "clown_sprite.png", clownOptions )
 local dogSheet = graphics.newImageSheet( "dog_sprite.png", dogOptions )
 -- bob animation sheets:
 local laughSheet = graphics.newImageSheet( "laughing_bob_sprite.png", laughOptions )
+local yellSheet = graphics.newImageSheet( "yelling_bob_sprite.png", yellOptions )
 
 -- initialising variables
 -- local clown, bus
@@ -250,6 +272,7 @@ _G.bobReactionTo = {}
 
 -- all bob's animations
 local laughAnimation
+local yellAnimation
 
 
 -- initialising display groups
@@ -262,14 +285,32 @@ local function goToProgramming()
   composer.gotoScene("lessons", {time=800, effect="crossFade"})
 end
 
-local function spriteListener(event)
+local function dogSpriteListener(event)
   local thisSprite = event.target
-
   if ( event.phase == "loop" ) then
         -- thisSprite:setSequence( "fastRun" )  -- switch to "fastRun" sequence
         thisSprite:pause()  -- play the new sequence
     end
 end
+
+local function yellSpriteListener(event)
+  local thisSprite = event.target
+  local resumePrevAnim
+  if laughAnimation.isPlaying then
+    resumePrevAnim = true
+  end
+  if ( event.phase == "loop" ) then
+        -- thisSprite:setSequence( "fastRun" )  -- switch to "fastRun" sequence
+        thisSprite:pause()  -- play the new sequence
+        thisSprite.isVisible = false
+        if resumePrevAnim then
+          laughAnimation.isVisible = true
+        else
+          bobsOnScreen[currentBob].isVisible = true
+        end
+    end
+end
+
 
 -- function which handles what happens when an object on screen is tapped on
 local function onTap(event)
@@ -329,6 +370,12 @@ local function onTap(event)
           -- local cryAnimation = display.newSprite( mainGroup, dogSheet, sequences_dog)
           -- objectToDisplay:addEventListener( "sprite", spriteListener )
           -- add an event listener to that sprite, that stops it after the loop, and re-displays current bob
+        elseif reaction == "yell" then
+          -- make bob yell
+          bobsOnScreen[currentBob].isVisible = false
+          yellAnimation.isVisible = true
+          yellAnimation:play()
+
         elseif reaction == "laugh" then
           -- make bob laugh
           -- make current bob invisible,
@@ -343,12 +390,8 @@ local function onTap(event)
             laughAnimation:play()
             bobsOnScreen[currentBob].isVisible = false
           end
-          --trigger this animation if not already triggered,
-          -- if()
-          -- if it is, then stop it, make it invisible, and make currentbob visible
-
-        elseif reaction == "yell" then
-          -- make bob yell
+        elseif reaction == "jump" then
+          -- make bob jump
         end
       end
   end
@@ -402,7 +445,7 @@ function scene:create( event )
         objectToDisplay = display.newSprite( mainGroup, clownSheet, sequences_clown)
       elseif name == "dog" then
         objectToDisplay = display.newSprite( mainGroup, dogSheet, sequences_dog)
-        objectToDisplay:addEventListener( "sprite", spriteListener )
+        objectToDisplay:addEventListener( "sprite", dogSpriteListener )
       end
       objectToDisplay.width = objectInfo.displayWidth
       objectToDisplay.height = objectInfo.displayHeight
@@ -443,19 +486,28 @@ function scene:create( event )
     bobsOnScreen[#bobsOnScreen+1] = bobToDisplay
   end
   currentBob = 2
-  -- display sprite laugh animation
+  -- bobsOnScreen[currentBob].isVisible = false
+  -- display all bob sprite animations, and hide each
+  --laugh animation
   laughAnimation = display.newSprite( mainGroup, laughSheet, sequences_laugh)
   laughAnimation.x = bobX
   laughAnimation.y = bobY
   laughAnimation.width = bobsOnScreen[currentBob].width
   laughAnimation.height = bobsOnScreen[currentBob].height
-  -- hide it
   laughAnimation.isVisible = false
+  -- yell animation
+  yellAnimation = display.newSprite( mainGroup, yellSheet, sequences_yell)
+  yellAnimation.x = bobX
+  yellAnimation.y = bobY
+  yellAnimation.width = bobsOnScreen[currentBob].width
+  yellAnimation.height = bobsOnScreen[currentBob].height
+  yellAnimation.isVisible = false
+  yellAnimation:addEventListener("sprite", yellSpriteListener)
 
 
 
 
-  beginButton = display.newText(mainGroup, "Begin programming bob!", 750, 100, native.systemFont, 44)
+  beginButton = display.newText(mainGroup, "Click here to program Bob!", 750, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)
 
   -- -- temporary

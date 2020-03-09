@@ -17,10 +17,10 @@ end
 
 local function setReactionToDog(event)
   local requiredReaction = event.target.text
-  if(requiredReaction == "Laugh") then
-    bobReactionTo["clown"] = "laugh"
-  else
-    bobReactionTo["clown"] = "cheer"
+  if(requiredReaction == "Yell") then
+    bobReactionTo["dog"] = "yell"
+  elseif(requiredReaction == "Jump") then
+    bobReactionTo["dog"] = "jump"
   end
 end
 
@@ -47,8 +47,12 @@ function scene:create( event )
 	local yellButton = display.newText(sceneGroup, "Yell", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
 	yellButton:setFillColor(0, 0, 0)
 
+  local jumpButton = display.newText(sceneGroup, "Jump", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44)
+  jumpButton:setFillColor(0, 0, 0)
+
 	playButton:addEventListener("tap", gotoGame)
   yellButton:addEventListener("tap", setReactionToDog)
+  jumpButton:addEventListener("tap", setReactionToDog)
 
 
 
