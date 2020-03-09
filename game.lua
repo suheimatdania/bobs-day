@@ -16,28 +16,48 @@ local bobOptions =
 {
     frames =
     {
-        {   -- 1) normal bob
+        {   -- 1) smiley bob
             x = 0,
             y = 0,
-            width = 366,
-            height = 530,
-            name = "normalBob"
+            width = 538,
+            height = 960,
+            name = "smileyBob"
+        },
+        {   -- 2) normal bob
+            x = 538,
+            y = 0,
+            width = 538,
+            height = 960,
+            name = "normalBob",
         },
         {   -- 2) sad bob
-            x = 368,
-            y = 78,
-            width = 544,
-            height = 800,
+            x = 1076,
+            y = 0,
+            width = 538,
+            height = 960,
             name = "sadBob",
-        },
-        { --3) speaking bob
-            x = 902,
-            y = 82,
-            width = 544,
-            height = 800,
-            name = "speakingBob"
         }
+    }
+}
 
+-- for bob crying animation
+local laughOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 3
+}
+
+-- sequences table for bob crying
+local sequences_laugh = {
+    -- consecutive frames sequence
+    {
+        name = "laughing",
+        start = 1,
+        count = 3,
+        time = 1200,
+        loopCount = 0,
+        loopDirection = "forward"
     }
 }
 
@@ -209,9 +229,11 @@ local sheetOptions =
 }
 
 local objectSheet = graphics.newImageSheet("objects.png", sheetOptions)
-local bobSheet = graphics.newImageSheet( "bobSprite.png", bobOptions)
+local bobSheet = graphics.newImageSheet( "defaultBobs.png", bobOptions)
 local clownSheet = graphics.newImageSheet( "clown_sprite.png", clownOptions )
 local dogSheet = graphics.newImageSheet( "dog_sprite.png", dogOptions )
+-- bob animation sheets:
+local laughSheet = graphics.newImageSheet( "laughing_bob_sprite.png", laughOptions )
 
 -- initialising variables
 -- local clown, bus
@@ -226,6 +248,10 @@ local currentBob = 1 -- keeps track of which bob is currently displayed
 -- bob's reaction will be initialised to nil at the beginning
 _G.bobReactionTo = {}
 
+-- all bob's animations
+local laughAnimation
+
+
 -- initialising display groups
 -- defer the actual creation of our three groups until we create the scene
 local backGroup
@@ -233,7 +259,7 @@ local mainGroup
 local bobGroup
 
 local function goToProgramming()
-  composer.gotoScene("programming", {time=800, effect="crossFade"})
+  composer.gotoScene("lessons", {time=800, effect="crossFade"})
 end
 
 local function spriteListener(event)
@@ -268,9 +294,10 @@ local function onTap(event)
   elseif objectTappedOn == "cloud" then
     object.isVisible = false
     objectsOnScreen[9].isVisible = true -- display sun
+    -- go back to neutral bob
     bobsOnScreen[currentBob].isVisible=false
-    bobsOnScreen[1].isVisible = true
-    currentBob = 1
+    bobsOnScreen[2].isVisible = true
+    currentBob = 2
 
   end
 
@@ -285,18 +312,43 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false
           bobsOnScreen[1].isVisible = true
           currentBob = 1
-        elseif reaction == "cry" then
-          bobsOnScreen[currentBob].isVisible = false
-          bobsOnScreen[2].isVisible = true
-          currentBob = 2
-        elseif reaction == "speak" then
+        elseif reaction == "sad" then
           bobsOnScreen[currentBob].isVisible = false
           bobsOnScreen[3].isVisible = true
           currentBob = 3
+        elseif reaction == "speak" then
+          -- make bob speak
+          -- bobsOnScreen[currentBob].isVisible = false
+          -- bobsOnScreen[3].isVisible = true
+          -- currentBob = 3
+        elseif reaction == "cry" then
+          -- make bob cry
+          -- hide current bob
+          -- bobsOnScreen[currentBob].isVisible = false
+          -- create animation from crying sprite and play it
+          -- local cryAnimation = display.newSprite( mainGroup, dogSheet, sequences_dog)
+          -- objectToDisplay:addEventListener( "sprite", spriteListener )
+          -- add an event listener to that sprite, that stops it after the loop, and re-displays current bob
         elseif reaction == "laugh" then
           -- make bob laugh
-        elseif reaction == "cheer" then
-          -- make bob Cheer
+          -- make current bob invisible,
+          bobsOnScreen[currentBob].isVisible = false
+          -- make laugh animation visible
+          if laughAnimation.isVisible == true then -- if it is playing
+            laughAnimation.isVisible = false
+            laughAnimation:pause()
+            bobsOnScreen[currentBob].isVisible = true
+          else
+            laughAnimation.isVisible = true
+            laughAnimation:play()
+            bobsOnScreen[currentBob].isVisible = false
+          end
+          --trigger this animation if not already triggered,
+          -- if()
+          -- if it is, then stop it, make it invisible, and make currentbob visible
+
+        elseif reaction == "yell" then
+          -- make bob yell
         end
       end
   end
@@ -373,22 +425,34 @@ function scene:create( event )
     -- addPhysics(objectToDisplay)
   end
 
+
   -- displaying main character bob on main group
+  local bobX = display.contentCenterX + 80
+  local bobY = display.contentCenterY + 170
   for f=1, #bobOptions.frames do
     -- display them according to info from sheetOptions
     local bobInfo = bobOptions.frames[f]
-    local bobToDisplay = display.newImageRect(bobGroup, bobSheet, f, 362, 550)
-    if(bobInfo.name ~= "normalBob") then -- initially only display normal bob
+    local name = bobInfo.name
+    local bobToDisplay = display.newImageRect(bobGroup, bobSheet, f, 540, 956)
+    if(name ~= "normalBob") then -- initially only display normal bob
       bobToDisplay.isVisible = false
     end
-    bobToDisplay.x = display.contentCenterX + 80
-    bobToDisplay.y = display.contentCenterY + 170
-    local name = bobInfo.name
+    bobToDisplay.x = bobX
+    bobToDisplay.y = bobY
     bobToDisplay.name = name
     bobsOnScreen[#bobsOnScreen+1] = bobToDisplay
-    -- adding phsyics
-    -- physics.addBody(bobToDisplay, "dynamic", {radius = 80, bounce = 0})
   end
+  currentBob = 2
+  -- display sprite laugh animation
+  laughAnimation = display.newSprite( mainGroup, laughSheet, sequences_laugh)
+  laughAnimation.x = bobX
+  laughAnimation.y = bobY
+  laughAnimation.width = bobsOnScreen[currentBob].width
+  laughAnimation.height = bobsOnScreen[currentBob].height
+  -- hide it
+  laughAnimation.isVisible = false
+
+
 
 
   beginButton = display.newText(mainGroup, "Begin programming bob!", 750, 100, native.systemFont, 44)

@@ -24,13 +24,13 @@ local function setReactionToClown(event)
   end
 end
 
-local function setReactionWhile(event)
+local function setReactionWeather(event)
   local requiredReaction = event.target.text
   -- print(requiredReaction)
-  if(requiredReaction == "Smile") then
+  if(requiredReaction == "Happy") then
     bobReactionTo["sun"] = "smile"
   else
-    bobReactionTo["sun"] = "cry"
+    bobReactionTo["sun"] = "sad"
   end
   print(bobReactionTo["sun"])
 end
@@ -69,17 +69,17 @@ function scene:create( event )
   laughButton:addEventListener("tap", setReactionToClown)
   nillButton:addEventListener("tap", setReactionToClown)
 
-  local whileText = display.newText(sceneGroup, "While the weather is bad, Bob will", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
+  local whileText = display.newText(sceneGroup, "While the weather is bad, Bob is", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
   whileText:setFillColor(0, 0, 0)
 
-  local smileButton = display.newText(sceneGroup, "Smile", display.contentCenterX, display.contentCenterY +100, native.systemFont, 44)
+  local smileButton = display.newText(sceneGroup, "Happy", display.contentCenterX, display.contentCenterY +100, native.systemFont, 44)
   smileButton:setFillColor(0, 0, 0)
 
-  local sadButton = display.newText( sceneGroup, "Cry", display.contentCenterX, display.contentCenterY + 200, native.systemFont, 44 )
+  local sadButton = display.newText( sceneGroup, "Sad", display.contentCenterX, display.contentCenterY + 200, native.systemFont, 44 )
   sadButton:setFillColor(0, 0, 0)
 
-  smileButton:addEventListener("tap", setReactionWhile)
-  sadButton:addEventListener("tap", setReactionWhile)
+  smileButton:addEventListener("tap", setReactionWeather)
+  sadButton:addEventListener("tap", setReactionWeather)
 
 end
 
