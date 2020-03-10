@@ -408,6 +408,7 @@ local function onTap(event)
       objectsOnScreen[5]:play()
     else -- if the speaker is already playing
       objectsOnScreen[5]:pause()
+      objectsOnScreen[5]:setFrame(1)
     end
   elseif objectTappedOn == "dog" then
     -- make dog bark
@@ -630,21 +631,8 @@ function scene:create( event )
   cryAnimation.isVisible = false
   cryAnimation:addEventListener("sprite", yellSpriteListener)
 
-
-
-
-
-
   beginButton = display.newText(mainGroup, "Click here to program Bob!", 750, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)
-
-  -- -- temporary
-  -- local platform = display.newImageRect( backGroup, "platform.png", 1024, 250 )
-  -- platform.x = display.contentCenterX
-  -- platform.y = display.contentHeight-25
-  -- platform.name = "platform"
-  -- physics.addBody( platform, "static", {bounce = 0})
-  --
 
   -- adding event listeners to the bodies
   for f=1, #objectsOnScreen do
