@@ -33,6 +33,15 @@ local function setReactionWeather(event)
   end
 end
 
+local function setReactionSpeaker(event)
+  local requiredReaction = event.target.text
+  if(requiredReaction == "Dancing") then
+    bobReactionTo["speaker"] = "dance"
+  elseif requiredReaction == "Singing" then
+    bobReactionTo["speaker"] = "sing"
+  end
+end
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -43,41 +52,59 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-  local background = display.newImageRect( sceneGroup, "backgroundL.jpg", 3500, 2300 )
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
+  display.setDefault( "background", 0, 0, 0, 1 )
 
   local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
-  playButton:setFillColor(0, 0, 0)
+  playButton:setFillColor(255, 255, 255)
 
   local lessonsButton = display.newText(sceneGroup, "Back to lessons", display.contentCenterX - 500, display.contentCenterY - 300, native.systemFont, 44)
-  lessonsButton:setFillColor(0, 0, 0)
+  lessonsButton:setFillColor(255, 255, 255)
 
-  local clownText = display.newText(sceneGroup, "While the clown juggles, bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
-  clownText:setFillColor(0, 0, 0)
-
-	local laughButton = display.newText(sceneGroup, "Laugh", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
-	laughButton:setFillColor(0, 0, 0)
-
-	local nillButton = display.newText( sceneGroup, "Cheer", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44 )
-	nillButton:setFillColor(0, 0, 0)
 
 	playButton:addEventListener("tap", gotoGame)
   lessonsButton:addEventListener("tap", gotoLessons)
+
+  -- 1
+
+  local clownText = display.newText(sceneGroup, "While the clown juggles, bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
+  clownText:setFillColor(255, 255, 255)
+
+	local laughButton = display.newText(sceneGroup, "Laugh", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
+	laughButton:setFillColor(255, 255, 255)
+
+	local nillButton = display.newText( sceneGroup, "Cheer", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44 )
+	nillButton:setFillColor(255, 255, 255)
+
   laughButton:addEventListener("tap", setReactionToClown)
   nillButton:addEventListener("tap", setReactionToClown)
 
-  local whileText = display.newText(sceneGroup, "While the weather is bad, Bob is", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
-  whileText:setFillColor(0, 0, 0)
+  -- 2
+
+  local weatherText = display.newText(sceneGroup, "While the weather is bad, Bob is", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
+  weatherText:setFillColor(255, 255, 255)
 
   local smileButton = display.newText(sceneGroup, "Happy", display.contentCenterX, display.contentCenterY +100, native.systemFont, 44)
-  smileButton:setFillColor(0, 0, 0)
+  smileButton:setFillColor(255, 255, 255)
 
   local sadButton = display.newText( sceneGroup, "Sad", display.contentCenterX, display.contentCenterY + 200, native.systemFont, 44 )
-  sadButton:setFillColor(0, 0, 0)
+  sadButton:setFillColor(255, 255, 255)
 
   smileButton:addEventListener("tap", setReactionWeather)
   sadButton:addEventListener("tap", setReactionWeather)
+
+  --3
+
+  local speakerText = display.newText(sceneGroup, "While the speaker is playing music, Bob is", display.contentCenterX, display.contentCenterY + 300, native.systemFont, 44)
+  speakerText:setFillColor(255, 255, 255)
+
+  local danceButton = display.newText(sceneGroup, "Dancing", display.contentCenterX, display.contentCenterY +350, native.systemFont, 44)
+  danceButton:setFillColor(255, 255, 255)
+
+  local singButton = display.newText( sceneGroup, "Singing", display.contentCenterX, display.contentCenterY + 400, native.systemFont, 44 )
+  singButton:setFillColor(255, 255, 255)
+
+  danceButton:addEventListener("tap", setReactionSpeaker)
+  singButton:addEventListener("tap", setReactionSpeaker)
 
 end
 

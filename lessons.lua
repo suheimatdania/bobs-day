@@ -19,7 +19,9 @@ local function gotoFor()
 	composer.gotoScene("for", {time=800, effect="crossFade"})
 end
 
-
+local function gotoGame()
+  composer.gotoScene("game", {time=800, effect="crossFade"})
+end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -27,6 +29,8 @@ end
 
 -- create()
 function scene:create( event )
+
+  display.setDefault( "background", 0, 100, 0, 1 )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
@@ -39,6 +43,10 @@ function scene:create( event )
 	-- title.x = display.contentCenterX
 	-- title.y = 200
 
+  local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
+  playButton:setFillColor(0, 0, 0)
+
+  playButton:addEventListener("tap", gotoGame)
 
 	local whileButton = display.newText(sceneGroup, "While statements", display.contentCenterX, 700, native.systemFont, 44)
 	whileButton:setFillColor(0, 0, 0)

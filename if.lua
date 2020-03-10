@@ -34,21 +34,24 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-  local background = display.newImageRect( sceneGroup, "backgroundL.jpg", 3500, 2300 )
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
+  display.setDefault( "background", 0, 0,0,0)
+
+  local lessonsButton = display.newText(sceneGroup, "Back to lessons", display.contentCenterX - 500, display.contentCenterY - 300, native.systemFont, 44)
+  lessonsButton:setFillColor(255, 255, 255)
+
+  lessonsButton:addEventListener("tap", gotoLessons)
 
   local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
-  playButton:setFillColor(0, 0, 0)
+  playButton:setFillColor(255, 255, 255)
 
   local clownText = display.newText(sceneGroup, "If the dog barks, then bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
-  clownText:setFillColor(0, 0, 0)
+  clownText:setFillColor(255, 255, 255)
 
 	local yellButton = display.newText(sceneGroup, "Yell", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
-	yellButton:setFillColor(0, 0, 0)
+	yellButton:setFillColor(255, 255, 255)
 
   local jumpButton = display.newText(sceneGroup, "Cry", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44)
-  jumpButton:setFillColor(0, 0, 0)
+  jumpButton:setFillColor(255, 255, 255)
 
 	playButton:addEventListener("tap", gotoGame)
   yellButton:addEventListener("tap", setReactionToDog)

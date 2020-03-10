@@ -118,7 +118,7 @@ local sequences_yell = {
         name = "yelling",
         start = 1,
         count = 2,
-        time = 2200,
+        time = 2600,
         loopCount = 0,
         loopDirection = "forward"
     }
@@ -181,7 +181,7 @@ local sequences_speaker = {
         name = "music",
         start = 1,
         count = 5,
-        time = 1200,
+        time = 700,
         loopCount = 0,
         loopDirection = "forward"
     }
@@ -373,16 +373,23 @@ end
 
 local function yellSpriteListener(event)
   local thisSprite = event.target
-  local resumePrevAnim
+  local resumePrevAnimLaugh
+  local resumePrevAnimDance
   if laughAnimation.isPlaying then
-    resumePrevAnim = true
+    laughAnimation.isVisible = false
+    resumePrevAnimLaugh = true
+  elseif danceAnimation.isPlaying then
+    danceAnimation.isVisible = false
+    resumePrevAnimDance = true
   end
   if ( event.phase == "loop" ) then
         -- thisSprite:setSequence( "fastRun" )  -- switch to "fastRun" sequence
         thisSprite:pause()  -- play the new sequence
         thisSprite.isVisible = false
-        if resumePrevAnim then
+        if resumePrevAnimLaugh then
           laughAnimation.isVisible = true
+        elseif resumePrevAnimDance then
+          danceAnimation.isVisible = true
         else
           bobsOnScreen[currentBob].isVisible = true
         end
@@ -399,13 +406,17 @@ local function onTap(event)
     -- make clown juggle
     if objectsOnScreen[1].isPlaying ~= true then -- if clown not already juggling
       objectsOnScreen[1]:play()
-    else -- if the clown is already juggling
+    else -- if the clown is already juggling, make it stop
       objectsOnScreen[1]:pause()
     end
   elseif objectTappedOn == "speaker" then
     -- make speaker play
     if objectsOnScreen[5].isPlaying ~= true then -- if speaker not already playing
       objectsOnScreen[5]:play()
+      if(objectsOnScreen[1].isPlaying) then-- if clown juggling make him stop (only one while loop at a time)
+        objectsOnScreen[1]:pause() -- make clown stop
+        bobsOnScreen[currentBob].isVisible = false
+      end
     else -- if the speaker is already playing
       objectsOnScreen[5]:pause()
       objectsOnScreen[5]:setFrame(1)
@@ -453,15 +464,9 @@ local function onTap(event)
           -- bobsOnScreen[3].isVisible = true
           -- currentBob = 3
         elseif reaction == "cry" then
-          -- make bob cry
-          -- hide current bob
-          -- bobsOnScreen[currentBob].isVisible = false
-          -- create animation from crying sprite and play it
-          -- local cryAnimation = display.newSprite( mainGroup, dogSheet, sequences_dog)
-          -- objectToDisplay:addEventListener( "sprite", spriteListener )
-          -- add an event listener to that sprite, that stops it after the loop, and re-displays current bob
-          bobsOnScreen[currentBob].isVisible = false
-          cryAnimation.isVisible = true
+
+          bobsOnScreen[currentBob].isVisible = false -- hide current bob
+          cryAnimation.isVisible = true -- show the crying animation and play it
           cryAnimation:play()
         elseif reaction == "yell" then
           -- make bob yell
@@ -475,7 +480,7 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false
           -- make laugh animation visible
           if laughAnimation.isVisible == true then -- if it is playing
-            laughAnimation.isVisible = false
+            laughAnimation.isVisible = false -- make it stop and hide it
             laughAnimation:pause()
             bobsOnScreen[currentBob].isVisible = true
           else
