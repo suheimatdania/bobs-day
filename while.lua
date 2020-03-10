@@ -32,7 +32,7 @@ local function setReactionWeather(event)
   else
     bobReactionTo["sun"] = "sad"
   end
-  print(bobReactionTo["sun"])
+  -- print(bobReactionTo["sun"])
 end
 
 -- -----------------------------------------------------------------------------------

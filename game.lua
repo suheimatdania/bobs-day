@@ -61,6 +61,27 @@ local sequences_laugh = {
     }
 }
 
+-- for bob crying animation
+local cryOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 4
+}
+
+-- sequences table for bob crying
+local sequences_cry = {
+    -- consecutive frames sequence
+    {
+        name = "crying",
+        start = 1,
+        count = 3,
+        time = 1200,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 -- for bob yelling animation
 local yellOptions =
 {
@@ -69,7 +90,7 @@ local yellOptions =
   numFrames = 2
 }
 
--- sequences table for bob crying
+-- sequences table for bob yelling
 local sequences_yell = {
     -- consecutive frames sequence
     {
@@ -103,6 +124,27 @@ local sequences_clown = {
     }
 }
 
+-- for frog animation
+local frogOptions =
+{
+  width = 234,
+  height = 195,
+  numFrames = 8
+}
+
+-- sequences table for frog
+local sequences_frog = {
+    -- consecutive frames sequence
+    {
+        name = "eating",
+        start = 1,
+        count = 8,
+        time = 1200,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 -- for dog animation
 local dogOptions =
 {
@@ -111,7 +153,7 @@ local dogOptions =
   numFrames = 3
 }
 
--- sequences table for clown
+-- sequences table for dog
 local sequences_dog = {
     -- consecutive frames sequence
     {
@@ -166,27 +208,16 @@ local sheetOptions =
         { -- 4) froggo
             x = 300,
             y = 0,
-            width = 235,
-            height = 194,
-            displayWidth = 200,
-            displayHeight = 161,
+            width = 234,
+            height = 195,
+            displayWidth = 234,
+            displayHeight = 195,
             name = "frog",
             displayX = 110,
-            displayY = 925
+            displayY = 925,
+            isAnimation = true
         },
-        { -- 5) froggo2
-            x = 300,
-            y = 0,
-            width = 235,
-            height = 194,
-            displayWidth = 124,
-            displayHeight = 100,
-            name = "frog2",
-            displayX = 120,
-            displayY = 900,
-            isReplacement = true
-        },
-        { -- 6) speaker
+        { -- 5) speaker
             x = 1116,
             y = 797,
             width = 404,
@@ -197,7 +228,7 @@ local sheetOptions =
             displayX = 990,
             displayY = 800
         },
-        { -- 7)doggo
+        { -- 6)doggo
           x = 538,
           y = 0,
           width = 242,
@@ -209,7 +240,7 @@ local sheetOptions =
           displayY = 900,
           isAnimation = true
         },
-        { -- 8)doggo bark
+        { -- 7)doggo bark
           x = 778,
           y = 0,
           width = 242,
@@ -221,7 +252,7 @@ local sheetOptions =
           displayY = 900,
           isReplacement = true
         },
-        { -- 9)sun
+        { -- 8)sun
           x = 1024,
           y = 0,
           width = 228,
@@ -232,7 +263,7 @@ local sheetOptions =
           displayX = -150,
           displayY = 150
         },
-        {-- 10) cloud
+        {-- 9) cloud
           x = 0,
           y = 224,
           width = 422,
@@ -253,9 +284,11 @@ local objectSheet = graphics.newImageSheet("objects.png", sheetOptions)
 local bobSheet = graphics.newImageSheet( "defaultBobs.png", bobOptions)
 local clownSheet = graphics.newImageSheet( "clown_sprite.png", clownOptions )
 local dogSheet = graphics.newImageSheet( "dog_sprite.png", dogOptions )
+local frogSheet = graphics.newImageSheet( "frog_sprite.png", frogOptions )
 -- bob animation sheets:
 local laughSheet = graphics.newImageSheet( "laughing_bob_sprite.png", laughOptions )
 local yellSheet = graphics.newImageSheet( "yelling_bob_sprite.png", yellOptions )
+local crySheet = graphics.newImageSheet( "crying_bob_sprite.png", cryOptions )
 
 -- initialising variables
 -- local clown, bus
@@ -273,6 +306,7 @@ _G.bobReactionTo = {}
 -- all bob's animations
 local laughAnimation
 local yellAnimation
+local cryAnimation
 
 
 -- initialising display groups
@@ -285,7 +319,7 @@ local function goToProgramming()
   composer.gotoScene("lessons", {time=800, effect="crossFade"})
 end
 
-local function dogSpriteListener(event)
+local function discreteSpriteListener(event)
   local thisSprite = event.target
   if ( event.phase == "loop" ) then
         -- thisSprite:setSequence( "fastRun" )  -- switch to "fastRun" sequence
@@ -326,15 +360,19 @@ local function onTap(event)
     end
   elseif objectTappedOn == "dog" then
     -- make dog bark
-    objectsOnScreen[7]:play()
+    objectsOnScreen[6]:play()
+  elseif objectTappedOn == "frog" then
+    -- make frog eat
+    -- print(objectsOnScreen[4].isPlaying)
+    objectsOnScreen[4]:play()
   elseif objectTappedOn == "bus" then
     object:applyLinearImpulse( 0, -2, object.x, object.y )
   elseif objectTappedOn == "sun" then
     object.isVisible = false
-    objectsOnScreen[10].isVisible = true -- display cloud
+    objectsOnScreen[9].isVisible = true -- display cloud
   elseif objectTappedOn == "cloud" then
     object.isVisible = false
-    objectsOnScreen[9].isVisible = true -- display sun
+    objectsOnScreen[8].isVisible = true -- display sun
     -- go back to neutral bob
     bobsOnScreen[currentBob].isVisible=false
     bobsOnScreen[2].isVisible = true
@@ -370,6 +408,9 @@ local function onTap(event)
           -- local cryAnimation = display.newSprite( mainGroup, dogSheet, sequences_dog)
           -- objectToDisplay:addEventListener( "sprite", spriteListener )
           -- add an event listener to that sprite, that stops it after the loop, and re-displays current bob
+          bobsOnScreen[currentBob].isVisible = false
+          cryAnimation.isVisible = true
+          cryAnimation:play()
         elseif reaction == "yell" then
           -- make bob yell
           bobsOnScreen[currentBob].isVisible = false
@@ -445,7 +486,10 @@ function scene:create( event )
         objectToDisplay = display.newSprite( mainGroup, clownSheet, sequences_clown)
       elseif name == "dog" then
         objectToDisplay = display.newSprite( mainGroup, dogSheet, sequences_dog)
-        objectToDisplay:addEventListener( "sprite", dogSpriteListener )
+        objectToDisplay:addEventListener( "sprite", discreteSpriteListener )
+      elseif name == "frog" then
+        objectToDisplay = display.newSprite( mainGroup, frogSheet, sequences_frog)
+        objectToDisplay:addEventListener( "sprite", discreteSpriteListener )
       end
       objectToDisplay.width = objectInfo.displayWidth
       objectToDisplay.height = objectInfo.displayHeight
@@ -503,6 +547,14 @@ function scene:create( event )
   yellAnimation.height = bobsOnScreen[currentBob].height
   yellAnimation.isVisible = false
   yellAnimation:addEventListener("sprite", yellSpriteListener)
+  -- cry animation
+  cryAnimation = display.newSprite( mainGroup, crySheet, sequences_cry)
+  cryAnimation.x = bobX
+  cryAnimation.y = bobY
+  cryAnimation.width = bobsOnScreen[currentBob].width
+  cryAnimation.height = bobsOnScreen[currentBob].height
+  cryAnimation.isVisible = false
+  cryAnimation:addEventListener("sprite", yellSpriteListener)
 
 
 

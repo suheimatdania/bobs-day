@@ -175,31 +175,41 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../all-bobs/cry1.png</key>
-            <key type="filename">../all-bobs/cry2.png</key>
-            <key type="filename">../all-bobs/cry3.png</key>
-            <key type="filename">../all-bobs/cry4.png</key>
+            <key type="filename">froggo.png</key>
+            <key type="filename">froggo1.png</key>
+            <key type="filename">froggo2.png</key>
+            <key type="filename">froggo3.png</key>
+            <key type="filename">froggo4.png</key>
+            <key type="filename">froggo5.png</key>
+            <key type="filename">froggo6.png</key>
+            <key type="filename">froggo7.png</key>
+            <key type="filename">froggo8.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
                 <key>spriteScale</key>
-                <double>0.9</double>
+                <double>1</double>
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>135,240,270,480</rect>
+                <rect>59,49,117,97</rect>
                 <key>scale9Paddings</key>
-                <rect>135,240,270,480</rect>
+                <rect>59,49,117,97</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
         </map>
         <key>fileList</key>
         <array>
-            <filename>../all-bobs/cry1.png</filename>
-            <filename>../all-bobs/cry2.png</filename>
-            <filename>../all-bobs/cry3.png</filename>
-            <filename>../all-bobs/cry4.png</filename>
+            <filename>froggo.png</filename>
+            <filename>froggo1.png</filename>
+            <filename>froggo2.png</filename>
+            <filename>froggo3.png</filename>
+            <filename>froggo4.png</filename>
+            <filename>froggo5.png</filename>
+            <filename>froggo6.png</filename>
+            <filename>froggo7.png</filename>
+            <filename>froggo8.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
