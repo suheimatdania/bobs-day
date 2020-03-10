@@ -19,20 +19,18 @@ local function setReactionToClown(event)
   local requiredReaction = event.target.text
   if(requiredReaction == "Laugh") then
     bobReactionTo["clown"] = "laugh"
-  else
+  elseif(requiredReaction == "Cheer") then
     bobReactionTo["clown"] = "cheer"
   end
 end
 
 local function setReactionWeather(event)
   local requiredReaction = event.target.text
-  -- print(requiredReaction)
   if(requiredReaction == "Happy") then
     bobReactionTo["sun"] = "smile"
-  else
+  elseif requiredReaction == "Sad" then
     bobReactionTo["sun"] = "sad"
   end
-  -- print(bobReactionTo["sun"])
 end
 
 -- -----------------------------------------------------------------------------------

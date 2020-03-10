@@ -61,6 +61,27 @@ local sequences_laugh = {
     }
 }
 
+-- for bob dancing animation
+local danceOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 4
+}
+
+-- sequences table for bob laughing
+local sequences_dance = {
+    -- consecutive frames sequence
+    {
+        name = "dancing",
+        start = 1,
+        count = 4,
+        time = 1000,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 -- for bob crying animation
 local cryOptions =
 {
@@ -145,6 +166,26 @@ local sequences_frog = {
     }
 }
 
+-- for speaker animation
+local speakerOptions =
+{
+  width = 276,
+  height = 450,
+  numFrames = 5
+}
+
+-- sequences table for frog
+local sequences_speaker = {
+    -- consecutive frames sequence
+    {
+        name = "music",
+        start = 1,
+        count = 5,
+        time = 1200,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
 -- for dog animation
 local dogOptions =
 {
@@ -199,7 +240,7 @@ local sheetOptions =
           y = 236,
           width = 380,
           height = 297,
-          displayWidth = 300,
+          displayWidth = 400,
           displayHeight = 243,
           name = "pond",
           displayX = 180,
@@ -222,11 +263,12 @@ local sheetOptions =
             y = 797,
             width = 404,
             height = 643,
-            displayWidth = 150,
-            displayHeight = 240,
+            displayWidth = 276,
+            displayHeight = 450,
             name = "speaker",
             displayX = 990,
-            displayY = 800
+            displayY = 800,
+            isAnimation = true
         },
         { -- 6)doggo
           x = 538,
@@ -285,8 +327,10 @@ local bobSheet = graphics.newImageSheet( "defaultBobs.png", bobOptions)
 local clownSheet = graphics.newImageSheet( "clown_sprite.png", clownOptions )
 local dogSheet = graphics.newImageSheet( "dog_sprite.png", dogOptions )
 local frogSheet = graphics.newImageSheet( "frog_sprite.png", frogOptions )
+local speakerSheet = graphics.newImageSheet( "speaker_sprite.png", speakerOptions )
 -- bob animation sheets:
 local laughSheet = graphics.newImageSheet( "laughing_bob_sprite.png", laughOptions )
+local danceSheet = graphics.newImageSheet( "dancing_bob_sprite.png", danceOptions )
 local yellSheet = graphics.newImageSheet( "yelling_bob_sprite.png", yellOptions )
 local crySheet = graphics.newImageSheet( "crying_bob_sprite.png", cryOptions )
 
@@ -303,11 +347,11 @@ local currentBob = 1 -- keeps track of which bob is currently displayed
 -- bob's reaction will be initialised to nil at the beginning
 _G.bobReactionTo = {}
 
--- all bob's animations
+-- initialising all bob's animations
 local laughAnimation
+local danceAnimation
 local yellAnimation
 local cryAnimation
-
 
 -- initialising display groups
 -- defer the actual creation of our three groups until we create the scene
@@ -357,6 +401,13 @@ local function onTap(event)
       objectsOnScreen[1]:play()
     else -- if the clown is already juggling
       objectsOnScreen[1]:pause()
+    end
+  elseif objectTappedOn == "speaker" then
+    -- make speaker play
+    if objectsOnScreen[5].isPlaying ~= true then -- if speaker not already playing
+      objectsOnScreen[5]:play()
+    else -- if the speaker is already playing
+      objectsOnScreen[5]:pause()
     end
   elseif objectTappedOn == "dog" then
     -- make dog bark
@@ -431,6 +482,20 @@ local function onTap(event)
             laughAnimation:play()
             bobsOnScreen[currentBob].isVisible = false
           end
+        elseif reaction == "dance" then
+          -- make bob dance
+          -- make current bob invisible,
+          bobsOnScreen[currentBob].isVisible = false
+          -- make dance animation visible
+          if danceAnimation.isVisible == true then -- if it is playing
+            danceAnimation.isVisible = false
+            danceAnimation:pause()
+            bobsOnScreen[currentBob].isVisible = true
+          else
+            danceAnimation.isVisible = true
+            danceAnimation:play()
+            bobsOnScreen[currentBob].isVisible = false
+          end
         elseif reaction == "jump" then
           -- make bob jump
         end
@@ -484,6 +549,8 @@ function scene:create( event )
     else
       if name == "clown" then
         objectToDisplay = display.newSprite( mainGroup, clownSheet, sequences_clown)
+      elseif name == "speaker" then
+        objectToDisplay = display.newSprite( mainGroup, speakerSheet, sequences_speaker)
       elseif name == "dog" then
         objectToDisplay = display.newSprite( mainGroup, dogSheet, sequences_dog)
         objectToDisplay:addEventListener( "sprite", discreteSpriteListener )
@@ -539,6 +606,13 @@ function scene:create( event )
   laughAnimation.width = bobsOnScreen[currentBob].width
   laughAnimation.height = bobsOnScreen[currentBob].height
   laughAnimation.isVisible = false
+  -- dance animation
+  danceAnimation = display.newSprite( mainGroup, danceSheet, sequences_laugh)
+  danceAnimation.x = bobX
+  danceAnimation.y = bobY
+  danceAnimation.width = bobsOnScreen[currentBob].width
+  danceAnimation.height = bobsOnScreen[currentBob].height
+  danceAnimation.isVisible = false
   -- yell animation
   yellAnimation = display.newSprite( mainGroup, yellSheet, sequences_yell)
   yellAnimation.x = bobX
@@ -555,6 +629,8 @@ function scene:create( event )
   cryAnimation.height = bobsOnScreen[currentBob].height
   cryAnimation.isVisible = false
   cryAnimation:addEventListener("sprite", yellSpriteListener)
+
+
 
 
 
