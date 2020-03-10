@@ -61,6 +61,27 @@ local sequences_laugh = {
     }
 }
 
+-- for bob laughing animation
+local cheerOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 4
+}
+
+-- sequences table for bob laughing
+local sequences_cheer = {
+    -- consecutive frames sequence
+    {
+        name = "laughing",
+        start = 1,
+        count = 4,
+        time = 1200,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 -- for bob dancing animation
 local danceOptions =
 {
@@ -333,6 +354,7 @@ local laughSheet = graphics.newImageSheet( "laughing_bob_sprite.png", laughOptio
 local danceSheet = graphics.newImageSheet( "dancing_bob_sprite.png", danceOptions )
 local yellSheet = graphics.newImageSheet( "yelling_bob_sprite.png", yellOptions )
 local crySheet = graphics.newImageSheet( "crying_bob_sprite.png", cryOptions )
+local cheerSheet = graphics.newImageSheet( "cheering_bob_sprite.png", cheerOptions )
 
 -- initialising variables
 -- local clown, bus
@@ -352,6 +374,7 @@ local laughAnimation
 local danceAnimation
 local yellAnimation
 local cryAnimation
+local cheerAnimation
 
 -- initialising display groups
 -- defer the actual creation of our three groups until we create the scene
@@ -464,18 +487,15 @@ local function onTap(event)
           -- bobsOnScreen[3].isVisible = true
           -- currentBob = 3
         elseif reaction == "cry" then
-
           bobsOnScreen[currentBob].isVisible = false -- hide current bob
           cryAnimation.isVisible = true -- show the crying animation and play it
           cryAnimation:play()
         elseif reaction == "yell" then
-          -- make bob yell
           bobsOnScreen[currentBob].isVisible = false
           yellAnimation.isVisible = true
           yellAnimation:play()
 
         elseif reaction == "laugh" then
-          -- make bob laugh
           -- make current bob invisible,
           bobsOnScreen[currentBob].isVisible = false
           -- make laugh animation visible
@@ -486,6 +506,20 @@ local function onTap(event)
           else
             laughAnimation.isVisible = true
             laughAnimation:play()
+            bobsOnScreen[currentBob].isVisible = false
+          end
+        elseif reaction == "cheer" then
+          -- make bob cheer
+          -- make current bob invisible,
+          bobsOnScreen[currentBob].isVisible = false
+          -- make laugh animation visible
+          if cheerAnimation.isVisible == true then -- if it is playing
+            cheerAnimation.isVisible = false -- make it stop and hide it
+            cheerAnimation:pause()
+            bobsOnScreen[currentBob].isVisible = true
+          else
+            cheerAnimation.isVisible = true
+            cheerAnimation:play()
             bobsOnScreen[currentBob].isVisible = false
           end
         elseif reaction == "dance" then
@@ -502,8 +536,6 @@ local function onTap(event)
             danceAnimation:play()
             bobsOnScreen[currentBob].isVisible = false
           end
-        elseif reaction == "jump" then
-          -- make bob jump
         end
       end
   end
@@ -619,6 +651,13 @@ function scene:create( event )
   danceAnimation.width = bobsOnScreen[currentBob].width
   danceAnimation.height = bobsOnScreen[currentBob].height
   danceAnimation.isVisible = false
+  -- cheer animation
+  cheerAnimation = display.newSprite( mainGroup, cheerSheet, sequences_cheer)
+  cheerAnimation.x = bobX
+  cheerAnimation.y = bobY
+  cheerAnimation.width = bobsOnScreen[currentBob].width
+  cheerAnimation.height = bobsOnScreen[currentBob].height
+  cheerAnimation.isVisible = false
   -- yell animation
   yellAnimation = display.newSprite( mainGroup, yellSheet, sequences_yell)
   yellAnimation.x = bobX
@@ -635,6 +674,7 @@ function scene:create( event )
   cryAnimation.height = bobsOnScreen[currentBob].height
   cryAnimation.isVisible = false
   cryAnimation:addEventListener("sprite", yellSpriteListener)
+
 
   beginButton = display.newText(mainGroup, "Click here to program Bob!", 750, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)
