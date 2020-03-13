@@ -367,6 +367,7 @@ local currentBob = 1 -- keeps track of which bob is currently displayed
 -- dictionary storing each object's name and bob's reaction to it
 -- this dictionary will be added to when the objects are added to the screen
 -- bob's reaction will be initialised to nil at the beginning
+local firstBusMove = true
 _G.bobReactionTo = {}
 
 -- initialising all bob's animations
@@ -384,6 +385,10 @@ local bobGroup
 
 local function goToProgramming()
   composer.gotoScene("lessons", {time=800, effect="crossFade"})
+end
+
+local function goToMainMenu()
+  composer.gotoScene("menu", {time=800, effect="crossFade"})
 end
 
 local function discreteSpriteListener(event)
@@ -449,10 +454,19 @@ local function onTap(event)
     objectsOnScreen[6]:play()
   elseif objectTappedOn == "frog" then
     -- make frog eat
-    -- print(objectsOnScreen[4].isPlaying)
     objectsOnScreen[4]:play()
   elseif objectTappedOn == "bus" then
-    object:applyLinearImpulse( 0, -2, object.x, object.y )
+    if(firstBusMove == false) then
+      objectsOnScreen[2]:scale(-1, 1)
+    else
+      firstBusMove = false
+    end
+    -- objectsOnScreen[2]:scale(-1, 1)
+    if(objectsOnScreen[2].x == 700) then
+      transition.to(objectsOnScreen[2], {x=200, y=750, time=2000})
+    else
+      transition.to(objectsOnScreen[2], {x=700, y=750, time=2000})
+    end
   elseif objectTappedOn == "sun" then
     object.isVisible = false
     objectsOnScreen[9].isVisible = true -- display cloud
@@ -538,15 +552,6 @@ local function onTap(event)
           end
         end
       end
-  end
-end
-
--- function which adds physics element to each object to be displayed
-local function addPhysics(objectToAddTo)
-  if objectToAddTo.name == "bus" then
-    physics.addBody( objectToAddTo, "dynamic", {radius = 70, bounce = 0} )
-  -- elseif objectToAddTo.name == "clown" then
-  --   physics.addBody( objectToAddTo, "dynamic", {radius = 185, bounce = 0})
   end
 end
 
@@ -678,13 +683,17 @@ function scene:create( event )
 
   beginButton = display.newText(mainGroup, "Click here to program Bob!", 750, 100, native.systemFont, 44)
   beginButton:setFillColor(0, 0, 0)
+  beginButton:addEventListener("tap", goToProgramming)
+
+  menuButton = display.newText(mainGroup, "Back to main menu", -140, 1000, native.systemFont, 31)
+  menuButton:setFillColor(0, 0, 0)
+  menuButton:addEventListener("tap", goToMainMenu)
 
   -- adding event listeners to the bodies
   for f=1, #objectsOnScreen do
       objectsOnScreen[f]:addEventListener("tap", onTap)
   end
 
-  beginButton:addEventListener("tap", goToProgramming)
 
 end
 

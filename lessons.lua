@@ -43,6 +43,9 @@ function scene:create( event )
 	-- title.x = display.contentCenterX
 	-- title.y = 200
 
+  local lessonsText = display.newText(sceneGroup, "Lessons", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 80)
+  lessonsText:setFillColor(0, 0, 0)
+
   local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
   playButton:setFillColor(0, 0, 0)
 
