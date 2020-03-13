@@ -8,8 +8,20 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 local socket = require("socket")
-local physics = require("physics")
-physics.start()
+--configuring sounds to be used
+local soundTable =
+{
+  speakerSong = audio.loadSound("speaker_song.mp3"),
+  clownSong = audio.loadSound(""),
+  frogCroak = audio.loadSound("frog_croak.mp3"),
+  dogBark = audio.loadSound(""),
+  bobSing = audio.loadSound(""),
+  bobYell = audio.loadSound(""),
+  bobLaugh = audio.loadSound(""),
+  bobCheer = audio.loadSound(""),
+  bobHello = audio.loadSound(""),
+  bobCry = audio.loadSound("")
+}
 
 -- configuring the image sheet for bob to be used
 local bobOptions =
@@ -102,6 +114,28 @@ local sequences_dance = {
         loopDirection = "forward"
     }
 }
+
+-- for bob singing animation
+local singOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 5
+}
+
+-- sequences table for bob laughing
+local sequences_sing = {
+    -- consecutive frames sequence
+    {
+        name = "singing",
+        start = 1,
+        count = 4,
+        time = 2000,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 
 -- for bob crying animation
 local cryOptions =
@@ -352,6 +386,7 @@ local speakerSheet = graphics.newImageSheet( "speaker_sprite.png", speakerOption
 -- bob animation sheets:
 local laughSheet = graphics.newImageSheet( "laughing_bob_sprite.png", laughOptions )
 local danceSheet = graphics.newImageSheet( "dancing_bob_sprite.png", danceOptions )
+local singSheet = graphics.newImageSheet( "singing_bob_sprite.png", singOptions )
 local yellSheet = graphics.newImageSheet( "yelling_bob_sprite.png", yellOptions )
 local crySheet = graphics.newImageSheet( "crying_bob_sprite.png", cryOptions )
 local cheerSheet = graphics.newImageSheet( "cheering_bob_sprite.png", cheerOptions )
@@ -373,6 +408,7 @@ _G.bobReactionTo = {}
 -- initialising all bob's animations
 local laughAnimation
 local danceAnimation
+local singAnimation
 local yellAnimation
 local cryAnimation
 local cheerAnimation
@@ -441,11 +477,13 @@ local function onTap(event)
     -- make speaker play
     if objectsOnScreen[5].isPlaying ~= true then -- if speaker not already playing
       objectsOnScreen[5]:play()
+      audio.play( soundTable["speakerSong"] )
       if(objectsOnScreen[1].isPlaying) then-- if clown juggling make him stop (only one while loop at a time)
         objectsOnScreen[1]:pause() -- make clown stop
-        bobsOnScreen[currentBob].isVisible = false
+        -- bobsOnScreen[currentBob].isVisible = false
       end
     else -- if the speaker is already playing
+      audio.pause( soundTable["speakerSong"] )
       objectsOnScreen[5]:pause()
       objectsOnScreen[5]:setFrame(1)
     end
@@ -454,6 +492,7 @@ local function onTap(event)
     objectsOnScreen[6]:play()
   elseif objectTappedOn == "frog" then
     -- make frog eat
+    audio.play( soundTable["frogCroak"], {duration = 1500 })
     objectsOnScreen[4]:play()
   elseif objectTappedOn == "bus" then
     if(firstBusMove == false) then
@@ -550,6 +589,20 @@ local function onTap(event)
             danceAnimation:play()
             bobsOnScreen[currentBob].isVisible = false
           end
+        elseif reaction == "sing" then
+          -- make bob dance
+          -- make current bob invisible,
+          bobsOnScreen[currentBob].isVisible = false
+          -- make dance animation visible
+          if singAnimation.isVisible == true then -- if it is playing
+            singAnimation.isVisible = false
+            singAnimation:pause()
+            bobsOnScreen[currentBob].isVisible = true
+          else
+            singAnimation.isVisible = true
+            singAnimation:play()
+            bobsOnScreen[currentBob].isVisible = false
+          end
         end
       end
   end
@@ -566,7 +619,6 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
-  physics.pause()
 
   backGroup = display.newGroup()  -- Display group for the background image
   sceneGroup:insert( backGroup )  -- Insert into the scene's view group
@@ -656,6 +708,13 @@ function scene:create( event )
   danceAnimation.width = bobsOnScreen[currentBob].width
   danceAnimation.height = bobsOnScreen[currentBob].height
   danceAnimation.isVisible = false
+  -- dance animation
+  singAnimation = display.newSprite( mainGroup, singSheet, sequences_sing)
+  singAnimation.x = bobX
+  singAnimation.y = bobY
+  singAnimation.width = bobsOnScreen[currentBob].width
+  singAnimation.height = bobsOnScreen[currentBob].height
+  singAnimation.isVisible = false
   -- cheer animation
   cheerAnimation = display.newSprite( mainGroup, cheerSheet, sequences_cheer)
   cheerAnimation.x = bobX
