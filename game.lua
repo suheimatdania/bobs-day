@@ -14,13 +14,13 @@ local soundTable =
   speakerSong = audio.loadSound("speaker_song.mp3"),
   clownSong = audio.loadSound(""),
   frogCroak = audio.loadSound("frog_croak.mp3"),
-  dogBark = audio.loadSound(""),
-  bobSing = audio.loadSound(""),
+  dogBark = audio.loadSound("dog_bark.mp3"),
+  bobSing = audio.loadSound("bob_singing.mp3"),
   bobYell = audio.loadSound(""),
   bobLaugh = audio.loadSound(""),
   bobCheer = audio.loadSound(""),
   bobHello = audio.loadSound(""),
-  bobCry = audio.loadSound("")
+  bobCry = audio.loadSound("bob_crying.mp3")
 }
 
 -- configuring the image sheet for bob to be used
@@ -435,6 +435,12 @@ local function discreteSpriteListener(event)
     end
 end
 
+local function bobCrySound (event)
+  print ( "listener called")
+  audio.play( soundTable["bobCry"], {duration = 1500 })
+end
+
+-- stops animations that arent in while loops from repeating endlessly
 local function yellSpriteListener(event)
   local thisSprite = event.target
   local resumePrevAnimLaugh
@@ -488,7 +494,8 @@ local function onTap(event)
       objectsOnScreen[5]:setFrame(1)
     end
   elseif objectTappedOn == "dog" then
-    -- make dog bark
+  -- make dog bark
+    audio.play( soundTable["dogBark"], {duration = 1000 })
     objectsOnScreen[6]:play()
   elseif objectTappedOn == "frog" then
     -- make frog eat
@@ -543,6 +550,7 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false -- hide current bob
           cryAnimation.isVisible = true -- show the crying animation and play it
           cryAnimation:play()
+          timer.performWithDelay (200, bobCrySound)
         elseif reaction == "yell" then
           bobsOnScreen[currentBob].isVisible = false
           yellAnimation.isVisible = true
@@ -595,12 +603,14 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false
           -- make dance animation visible
           if singAnimation.isVisible == true then -- if it is playing
+            audio.pause( soundTable["bobSing"])
             singAnimation.isVisible = false
             singAnimation:pause()
             bobsOnScreen[currentBob].isVisible = true
-          else
+          else -- make it play
             singAnimation.isVisible = true
             singAnimation:play()
+            audio.play( soundTable["bobSing"])
             bobsOnScreen[currentBob].isVisible = false
           end
         end
