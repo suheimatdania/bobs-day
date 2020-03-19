@@ -12,13 +12,13 @@ local socket = require("socket")
 local soundTable =
 {
   speakerSong = audio.loadSound("speaker_song.mp3"),
-  clownSong = audio.loadSound(""),
+  clownSong = audio.loadSound("clown_song.mp3"),
   frogCroak = audio.loadSound("frog_croak.mp3"),
   dogBark = audio.loadSound("dog_bark.mp3"),
   bobSing = audio.loadSound("bob_singing.mp3"),
-  bobYell = audio.loadSound(""),
-  bobLaugh = audio.loadSound(""),
-  bobCheer = audio.loadSound(""),
+  bobYell = audio.loadSound("bob_yelling.mp3"),
+  bobLaugh = audio.loadSound("bob_laughing.mp3"),
+  bobCheer = audio.loadSound("bob_clapping.mp3"),
   bobHello = audio.loadSound(""),
   bobCry = audio.loadSound("bob_crying.mp3")
 }
@@ -436,8 +436,11 @@ local function discreteSpriteListener(event)
 end
 
 local function bobCrySound (event)
-  print ( "listener called")
   audio.play( soundTable["bobCry"], {duration = 1500 })
+end
+
+local function bobYellSound (event)
+  audio.play( soundTable["bobYell"], {duration = 1500 })
 end
 
 -- stops animations that arent in while loops from repeating endlessly
@@ -476,8 +479,10 @@ local function onTap(event)
     -- make clown juggle
     if objectsOnScreen[1].isPlaying ~= true then -- if clown not already juggling
       objectsOnScreen[1]:play()
+      audio.play( soundTable["clownSong"])
     else -- if the clown is already juggling, make it stop
       objectsOnScreen[1]:pause()
+      audio.pause( soundTable["clownSong"])
     end
   elseif objectTappedOn == "speaker" then
     -- make speaker play
@@ -555,7 +560,7 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false
           yellAnimation.isVisible = true
           yellAnimation:play()
-
+          timer.performWithDelay (400, bobYellSound)
         elseif reaction == "laugh" then
           -- make current bob invisible,
           bobsOnScreen[currentBob].isVisible = false
@@ -564,10 +569,12 @@ local function onTap(event)
             laughAnimation.isVisible = false -- make it stop and hide it
             laughAnimation:pause()
             bobsOnScreen[currentBob].isVisible = true
+            audio.pause( soundTable["bobLaugh"])
           else
             laughAnimation.isVisible = true
             laughAnimation:play()
             bobsOnScreen[currentBob].isVisible = false
+            audio.play( soundTable["bobLaugh"])
           end
         elseif reaction == "cheer" then
           -- make bob cheer
@@ -578,10 +585,12 @@ local function onTap(event)
             cheerAnimation.isVisible = false -- make it stop and hide it
             cheerAnimation:pause()
             bobsOnScreen[currentBob].isVisible = true
+            audio.pause(soundTable["bobCheer"])
           else
             cheerAnimation.isVisible = true
             cheerAnimation:play()
             bobsOnScreen[currentBob].isVisible = false
+            audio.play(soundTable["bobCheer"])
           end
         elseif reaction == "dance" then
           -- make bob dance

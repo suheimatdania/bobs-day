@@ -1,5 +1,6 @@
 
 local composer = require( "composer" )
+local widget = require("widget")
 
 local scene = composer.newScene()
 
@@ -7,12 +8,19 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-local function gotoGame()
-  composer.gotoScene("game", {time=800, effect="crossFade"})
+
+local function goToGameEvent( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("game", {time=800, effect="crossFade"})
+  end
 end
 
-local function goToInstructions()
-	composer.gotoScene("instructions", {time=800, effect="crossFade"})
+local function goToInstructionsEvent( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("instructions", {time=800, effect="crossFade"})
+  end
 end
 
 
@@ -28,7 +36,7 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-  local background = display.newImageRect( sceneGroup, "backgroundL.jpg", 3500, 2300 )
+  local background = display.newImageRect( sceneGroup, "menu-background.png", 1500, 1000 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
@@ -36,15 +44,49 @@ function scene:create( event )
 	-- title.x = display.contentCenterX
 	-- title.y = 200
 
+  --
+	-- local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 700, native.systemFont, 44)
+	-- playButton:setFillColor(0, 0, 0)
 
-	local playButton = display.newText(sceneGroup, "Play", display.contentCenterX, 700, native.systemFont, 44)
-	playButton:setFillColor(0, 0, 0)
+  local playButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 415,
+      height = 270,
+      defaultFile = "playButton.png",
+      -- overFile = "platform.png",
+      -- label = "Play",
+      onEvent = goToGameEvent,
+    }
+  )
 
-	local highScoresButton = display.newText( sceneGroup, "Instructions", display.contentCenterX, 810, native.systemFont, 44 )
-	highScoresButton:setFillColor(0, 0, 0)
+  local instructionsButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 640,
+      height = 415,
+      defaultFile = "instructions.png",
+      overFile = "platform.png",
+      -- label = "Play",
+      onEvent = goToInstructionsEvent,
+    }
+  )
 
-	playButton:addEventListener("tap", gotoGame)
-	highScoresButton:addEventListener("tap", goToInstructions)
+  playButton.x = display.contentCenterX
+  playButton.y = 450
+  sceneGroup:insert(playButton)
+
+  instructionsButton.x = display.contentCenterX
+  instructionsButton.y = 700
+  sceneGroup:insert(instructionsButton)
+
+	-- local highScoresButton = display.newText( sceneGroup, "Instructions", display.contentCenterX, 810, native.systemFont, 44 )
+	-- highScoresButton:setFillColor(0, 0, 0)
+  --
+	-- playButton:addEventListener("tap", gotoGame)
+	-- highScoresButton:addEventListener("tap", goToInstructions)
 
 end
 

@@ -70,10 +70,10 @@ function scene:create( event )
   clownText:setFillColor(255, 255, 255)
 
 	local laughButton = display.newText(sceneGroup, "Laugh", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
-	laughButton:setFillColor(255, 255, 255)
+	laughButton:setFillColor(0,0,205)
 
 	local nillButton = display.newText( sceneGroup, "Cheer", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44 )
-	nillButton:setFillColor(255, 255, 255)
+	nillButton:setFillColor(0,0,205)
 
   laughButton:addEventListener("tap", setReactionToClown)
   nillButton:addEventListener("tap", setReactionToClown)
@@ -84,10 +84,10 @@ function scene:create( event )
   weatherText:setFillColor(255, 255, 255)
 
   local smileButton = display.newText(sceneGroup, "Happy", display.contentCenterX, display.contentCenterY +100, native.systemFont, 44)
-  smileButton:setFillColor(255, 255, 255)
+  smileButton:setFillColor(0,0,205)
 
   local sadButton = display.newText( sceneGroup, "Sad", display.contentCenterX, display.contentCenterY + 200, native.systemFont, 44 )
-  sadButton:setFillColor(255, 255, 255)
+  sadButton:setFillColor(0,0,205)
 
   smileButton:addEventListener("tap", setReactionWeather)
   sadButton:addEventListener("tap", setReactionWeather)
@@ -98,10 +98,10 @@ function scene:create( event )
   speakerText:setFillColor(255, 255, 255)
 
   local danceButton = display.newText(sceneGroup, "Dancing", display.contentCenterX, display.contentCenterY +350, native.systemFont, 44)
-  danceButton:setFillColor(255, 255, 255)
+  danceButton:setFillColor(0,0,205)
 
   local singButton = display.newText( sceneGroup, "Singing", display.contentCenterX, display.contentCenterY + 400, native.systemFont, 44 )
-  singButton:setFillColor(255, 255, 255)
+  singButton:setFillColor(0,0,205)
 
   danceButton:addEventListener("tap", setReactionSpeaker)
   singButton:addEventListener("tap", setReactionSpeaker)

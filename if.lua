@@ -57,27 +57,27 @@ function scene:create( event )
   dogText:setFillColor(255, 255, 255)
 
 	local yellButton = display.newText(sceneGroup, "Yell", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
-	yellButton:setFillColor(255, 255, 255)
+	yellButton:setFillColor(0,0,205)
 
   local jumpButton = display.newText(sceneGroup, "Cry", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44)
-  jumpButton:setFillColor(255, 255, 255)
+  jumpButton:setFillColor(0,0,205)
 
 	playButton:addEventListener("tap", gotoGame)
   yellButton:addEventListener("tap", setReactionToDog)
   jumpButton:addEventListener("tap", setReactionToDog)
 
 
-  local busIfText = display.newText(sceneGroup, "If the bus drives away (to the left), then Bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
+  local busIfText = display.newText(sceneGroup, "If the bus drives away (to the left), then Bob will...", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
   busIfText:setFillColor(255, 255, 255)
 
-  local waveButton = display.newText(sceneGroup, "Wave", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
-  waveButton:setFillColor(255, 255, 255)
+  local waveButton = display.newText(sceneGroup, "Wave", display.contentCenterX, display.contentCenterY + 100, native.systemFont, 44)
+  waveButton:setFillColor(0,0,205)
 
-  local busElseText = display.newText(sceneGroup, "Else", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
+  local busElseText = display.newText(sceneGroup, "Else", display.contentCenterX, display.contentCenterY + 200, native.systemFont, 44)
   busElseText:setFillColor(255, 255, 255)
 
-  local helloButton = display.newText(sceneGroup, "Say Hello", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44)
-  helloButton:setFillColor(255, 255, 255)
+  local helloButton = display.newText(sceneGroup, "Say Hello", display.contentCenterX, display.contentCenterY + 300, native.systemFont, 44)
+  helloButton:setFillColor(0,0,205)
 
   waveButton:addEventListener("tap", setReactionToBus)
   helloButton:addEventListener("tap", setReactionToBus)

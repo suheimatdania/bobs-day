@@ -8,7 +8,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 local function gotoWhile()
-  composer.gotoScene("while", {time=800, effect="crossFade"})
+  composer.gotoScene("newWhile", {time=800, effect="crossFade"})
 end
 
 local function gotoIf()
