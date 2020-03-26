@@ -1,5 +1,6 @@
 
 local composer = require( "composer" )
+local widget = require("widget")
 
 local scene = composer.newScene()
 
@@ -19,6 +20,7 @@ local soundTable =
   bobYell = audio.loadSound("bob_yelling.mp3"),
   bobLaugh = audio.loadSound("bob_laughing.mp3"),
   bobCheer = audio.loadSound("bob_clapping.mp3"),
+  bobBye = audio.loadSound("bob_bye.mp3"),
   bobHello = audio.loadSound(""),
   bobCry = audio.loadSound("bob_crying.mp3")
 }
@@ -174,6 +176,69 @@ local sequences_yell = {
         start = 1,
         count = 2,
         time = 2600,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
+-- for bob yelling animation
+local yellOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 2
+}
+
+-- sequences table for bob yelling
+local sequences_yell = {
+    -- consecutive frames sequence
+    {
+        name = "yelling",
+        start = 1,
+        count = 2,
+        time = 2600,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
+-- for bob speaking animation
+local speakOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 2
+}
+
+-- sequences table for bob yelling
+local sequences_speak = {
+    -- consecutive frames sequence
+    {
+        name = "speaking",
+        start = 1,
+        count = 2,
+        time = 2600,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
+-- for bob waving animation
+local waveOptions =
+{
+  width = 540,
+  height = 956,
+  numFrames = 6
+}
+
+-- sequences table for bob yelling
+local sequences_wave = {
+    -- consecutive frames sequence
+    {
+        name = "waving",
+        start = 1,
+        count = 2,
+        time = 1000,
         loopCount = 0,
         loopDirection = "forward"
     }
@@ -388,6 +453,8 @@ local laughSheet = graphics.newImageSheet( "laughing_bob_sprite.png", laughOptio
 local danceSheet = graphics.newImageSheet( "dancing_bob_sprite.png", danceOptions )
 local singSheet = graphics.newImageSheet( "singing_bob_sprite.png", singOptions )
 local yellSheet = graphics.newImageSheet( "yelling_bob_sprite.png", yellOptions )
+local waveSheet = graphics.newImageSheet( "waving_bob_sprite.png", waveOptions )
+local speakSheet = graphics.newImageSheet( "speaking_bob_sprite.png", speakOptions )
 local crySheet = graphics.newImageSheet( "crying_bob_sprite.png", cryOptions )
 local cheerSheet = graphics.newImageSheet( "cheering_bob_sprite.png", cheerOptions )
 
@@ -403,6 +470,7 @@ local currentBob = 1 -- keeps track of which bob is currently displayed
 -- this dictionary will be added to when the objects are added to the screen
 -- bob's reaction will be initialised to nil at the beginning
 local firstBusMove = true
+local busPos = "right"
 _G.bobReactionTo = {}
 
 -- initialising all bob's animations
@@ -410,6 +478,7 @@ local laughAnimation
 local danceAnimation
 local singAnimation
 local yellAnimation
+local waveAnimation
 local cryAnimation
 local cheerAnimation
 
@@ -419,13 +488,20 @@ local backGroup
 local mainGroup
 local bobGroup
 
-local function goToProgramming()
-  composer.gotoScene("lessons", {time=800, effect="crossFade"})
+local function goToProgramming( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("lessons", {time=800, effect="crossFade"})
+  end
 end
 
-local function goToMainMenu()
-  composer.gotoScene("menu", {time=800, effect="crossFade"})
+local function goToMainMenu( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("menu", {time=800, effect="crossFade"})
+  end
 end
+
 
 local function discreteSpriteListener(event)
   local thisSprite = event.target
@@ -512,11 +588,12 @@ local function onTap(event)
     else
       firstBusMove = false
     end
-    -- objectsOnScreen[2]:scale(-1, 1)
-    if(objectsOnScreen[2].x == 700) then
-      transition.to(objectsOnScreen[2], {x=200, y=750, time=2000})
+    if(objectsOnScreen[2].x == 700) then -- if bus is on the right
+      transition.to(objectsOnScreen[2], {x=200, y=750, time=2000}) -- move left
+      busPos = "left"
     else
-      transition.to(objectsOnScreen[2], {x=700, y=750, time=2000})
+      transition.to(objectsOnScreen[2], {x=700, y=750, time=2000}) -- move right
+      busPos = "right"
     end
   elseif objectTappedOn == "sun" then
     object.isVisible = false
@@ -622,6 +699,20 @@ local function onTap(event)
             audio.play( soundTable["bobSing"])
             bobsOnScreen[currentBob].isVisible = false
           end
+        elseif reaction == "wave" then
+          bobsOnScreen[currentBob].isVisible = false
+          waveAnimation.isVisible = true
+          waveAnimation:play()
+        elseif reaction == "goodbye" then
+          bobsOnScreen[currentBob].isVisible = false
+          speakAnimation.isVisible = true
+          speakAnimation:play()
+          audio.play(soundTable["bobBye"], {duration = 2000 } )
+        elseif reaction == "hello" then
+          bobsOnScreen[currentBob].isVisible = false
+          speakAnimation.isVisible = true
+          speakAnimation:play()
+          audio.play(soundTable["bobHello"], {duration = 2000 } )
         end
       end
   end
@@ -651,6 +742,40 @@ function scene:create( event )
   background = display.newImageRect( backGroup, "background2.jpg", 3500, 2300 )
   background.x = display.contentCenterX
   background.y = display.contentCenterY
+
+  local beginButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 415,
+      height = 270,
+      defaultFile = "programBob.png",
+      -- overFile = "platform.png",
+      -- label = "Play",
+      onEvent = goToProgramming,
+    }
+  )
+
+  beginButton.x = 850
+  beginButton.y = 100
+  sceneGroup:insert(beginButton)
+
+  local menuButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 350,
+      height = 170,
+      defaultFile = "mainMenuButton.png",
+      -- overFile = "platform.png",
+      -- label = "Play",
+      onEvent = goToMainMenu,
+    }
+  )
+
+  menuButton.x = -160
+  menuButton.y = 950
+  sceneGroup:insert(menuButton)
 
   -- display objects on main group and add physics to them
   for f=1, #sheetOptions.frames do
@@ -687,8 +812,15 @@ function scene:create( event )
 
 
     -- adding the object and bob's reaction to it to the bobReactionTo table
-    bobReactionTo[#bobReactionTo+1] = name
-    bobReactionTo[name] = "nil" -- default bob's reaction should be none
+    if(name == "bus") then
+      bobReactionTo[#bobReactionTo+1] = "busGoingLeft"
+      bobReactionTo[#bobReactionTo+1] = "busGoingRight"
+      bobReactionTo["busGoingLeft"] = "nil" -- default bob's reaction should be none
+      bobReactionTo["busGoingRight"] = "nil" -- default bob's reaction should be none
+    else
+      bobReactionTo[#bobReactionTo+1] = name
+      bobReactionTo[name] = "nil" -- default bob's reaction should be none
+    end
     -- adding phsyics
     -- addPhysics(objectToDisplay)
   end
@@ -749,6 +881,22 @@ function scene:create( event )
   yellAnimation.height = bobsOnScreen[currentBob].height
   yellAnimation.isVisible = false
   yellAnimation:addEventListener("sprite", yellSpriteListener)
+  -- wave animation
+  waveAnimation = display.newSprite( mainGroup, waveSheet, sequences_wave)
+  waveAnimation.x = bobX
+  waveAnimation.y = bobY
+  waveAnimation.width = bobsOnScreen[currentBob].width
+  waveAnimation.height = bobsOnScreen[currentBob].height
+  waveAnimation.isVisible = false
+  waveAnimation:addEventListener("sprite", yellSpriteListener)
+  -- speak animation
+  speakAnimation = display.newSprite( mainGroup, speakSheet, sequences_speak)
+  speakAnimation.x = bobX
+  speakAnimation.y = bobY
+  speakAnimation.width = bobsOnScreen[currentBob].width
+  speakAnimation.height = bobsOnScreen[currentBob].height
+  speakAnimation.isVisible = false
+  speakAnimation:addEventListener("sprite", yellSpriteListener)
   -- cry animation
   cryAnimation = display.newSprite( mainGroup, crySheet, sequences_cry)
   cryAnimation.x = bobX
@@ -757,15 +905,6 @@ function scene:create( event )
   cryAnimation.height = bobsOnScreen[currentBob].height
   cryAnimation.isVisible = false
   cryAnimation:addEventListener("sprite", yellSpriteListener)
-
-
-  beginButton = display.newText(mainGroup, "Click here to program Bob!", 750, 100, native.systemFont, 44)
-  beginButton:setFillColor(0, 0, 0)
-  beginButton:addEventListener("tap", goToProgramming)
-
-  menuButton = display.newText(mainGroup, "Back to main menu", -140, 1000, native.systemFont, 31)
-  menuButton:setFillColor(0, 0, 0)
-  menuButton:addEventListener("tap", goToMainMenu)
 
   -- adding event listeners to the bodies
   for f=1, #objectsOnScreen do

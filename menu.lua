@@ -68,7 +68,7 @@ function scene:create( event )
       width = 640,
       height = 415,
       defaultFile = "instructions.png",
-      overFile = "platform.png",
+      -- overFile = "platform.png",
       -- label = "Play",
       onEvent = goToInstructionsEvent,
     }

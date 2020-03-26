@@ -15,7 +15,17 @@ local function gotoLessons()
   composer.gotoScene("lessons", {time=800, effect="crossFade"})
 end
 
-local function setReactionToBus(event)
+
+local function setReactionToDog(event)
+  local requiredReaction = event.target.text
+  if(requiredReaction == "Yell") then
+    bobReactionTo["dog"] = "yell"
+  elseif(requiredReaction == "Cry") then
+    bobReactionTo["dog"] = "cry"
+  end
+end
+
+local function setReactionToBusLeft(event)
   local requiredReaction = event.target.text
   if(requiredReaction == "Wave") then
     bobReactionTo["bus"] = "wave"
@@ -24,12 +34,12 @@ local function setReactionToBus(event)
   end
 end
 
-local function setReactionToDog(event)
+local function setReactionToBusRight(event)
   local requiredReaction = event.target.text
-  if(requiredReaction == "Yell") then
-    bobReactionTo["dog"] = "yell"
-  elseif(requiredReaction == "Cry") then
-    bobReactionTo["dog"] = "cry"
+  if(requiredReaction == "Wave") then
+    bobReactionTo["bus"] = "wave"
+  elseif(requiredReaction == "Say Hello") then
+    bobReactionTo["bus"] = "hello"
   end
 end
 
@@ -79,10 +89,8 @@ function scene:create( event )
   local helloButton = display.newText(sceneGroup, "Say Hello", display.contentCenterX, display.contentCenterY + 300, native.systemFont, 44)
   helloButton:setFillColor(0,0,205)
 
-  waveButton:addEventListener("tap", setReactionToBus)
-  helloButton:addEventListener("tap", setReactionToBus)
-
-
+  waveButton:addEventListener("tap", setReactionToBusLeft)
+  helloButton:addEventListener("tap", setReactionToBusRight)
 
 end
 

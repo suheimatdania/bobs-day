@@ -8,7 +8,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 local function gotoWhile()
-  composer.gotoScene("newWhile", {time=800, effect="crossFade"})
+  composer.gotoScene("oldWhile", {time=800, effect="crossFade"})
 end
 
 local function gotoIf()
@@ -35,16 +35,17 @@ function scene:create( event )
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-  local background = display.newImageRect( sceneGroup, "backgroundL.jpg", 3500, 2300 )
+  local background = display.newImageRect( sceneGroup, "lessonsBackground.jpg", 3500, 2300 )
 	background.x = display.contentCenterX
 	background.y = display.contentCenterY
 
-	-- local title = display.newImageRect( sceneGroup,"title.png", 500, 80 )
-	-- title.x = display.contentCenterX
-	-- title.y = 200
 
-  local lessonsText = display.newText(sceneGroup, "Lessons", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 80)
-  lessonsText:setFillColor(0, 0, 0)
+  local lessonsText = display.newImageRect( sceneGroup, "lessonsText.png", 1000, 750 )
+	lessonsText.x = display.contentCenterX
+	lessonsText.y = display.contentCenterY - 200
+
+  -- local lessonsText = display.newText(sceneGroup, "Lessons", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 80)
+  -- lessonsText:setFillColor(0, 0, 0)
 
   local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
   playButton:setFillColor(0, 0, 0)
