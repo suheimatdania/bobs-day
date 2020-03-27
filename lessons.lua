@@ -1,5 +1,6 @@
 
 local composer = require( "composer" )
+local widget = require( "widget" )
 
 local scene = composer.newScene()
 
@@ -19,8 +20,11 @@ local function gotoFor()
 	composer.gotoScene("for", {time=800, effect="crossFade"})
 end
 
-local function gotoGame()
-  composer.gotoScene("game", {time=800, effect="crossFade"})
+local function goToGame( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("game", {time=800, effect="crossFade"})
+  end
 end
 
 -- -----------------------------------------------------------------------------------
@@ -40,17 +44,29 @@ function scene:create( event )
 	background.y = display.contentCenterY
 
 
-  local lessonsText = display.newImageRect( sceneGroup, "lessonsText.png", 1000, 750 )
+  local lessonsText = display.newImageRect( sceneGroup, "lessonsText.png", 1000, 650 )
 	lessonsText.x = display.contentCenterX
 	lessonsText.y = display.contentCenterY - 200
 
-  -- local lessonsText = display.newText(sceneGroup, "Lessons", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 80)
-  -- lessonsText:setFillColor(0, 0, 0)
+  local bobButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 300,
+      height = 150,
+      defaultFile = "backToBobButton.png",
+      onEvent = goToGame,
+    }
+  )
 
-  local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
-  playButton:setFillColor(0, 0, 0)
+  bobButton.x = display.contentCenterX - 500
+  bobButton.y = display.contentCenterY - 400
+  sceneGroup:insert(bobButton)
 
-  playButton:addEventListener("tap", gotoGame)
+  -- local playButton = display.newText(sceneGroup, "Back to bob!", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
+  -- playButton:setFillColor(0, 0, 0)
+
+  -- playButton:addEventListener("tap", gotoGame)
 
 	local whileButton = display.newText(sceneGroup, "While statements", display.contentCenterX, 700, native.systemFont, 44)
 	whileButton:setFillColor(0, 0, 0)

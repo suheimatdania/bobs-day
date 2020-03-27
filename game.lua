@@ -756,8 +756,8 @@ function scene:create( event )
     }
   )
 
-  beginButton.x = 850
-  beginButton.y = 100
+  beginButton.x = display.contentCenterX + 470
+  beginButton.y = display.contentCenterY - 440
   sceneGroup:insert(beginButton)
 
   local menuButton = widget.newButton(
@@ -765,7 +765,7 @@ function scene:create( event )
       left = 150,
       top = 200,
       width = 350,
-      height = 170,
+      height = 190,
       defaultFile = "mainMenuButton.png",
       -- overFile = "platform.png",
       -- label = "Play",
