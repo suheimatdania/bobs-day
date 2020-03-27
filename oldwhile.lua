@@ -8,12 +8,22 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-local function gotoGame()
-  composer.gotoScene("game", {time=800, effect="crossFade"})
+local function goToGame(event)
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("game", {time=800, effect="crossFade"})
+  end
 end
 
 local function gotoLessons()
   composer.gotoScene("lessons", {time=800, effect="crossFade"})
+end
+
+local function gotoWhileLessonText( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("whileLessonText", {time=800, effect="crossFade"})
+  end
 end
 
 local function setReactionToClown( event )
@@ -67,15 +77,53 @@ function scene:create( event )
 
   display.setDefault( "background", 245,245,220, 1 )
 
-  local playButton = display.newText(sceneGroup, "Go to Bob!", display.contentCenterX + 500, display.contentCenterY + 400, native.systemFont, 44)
-  playButton:setFillColor(0, 0, 0)
+  local playButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 184,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = goToGame,
+      label = "Go to Bob",
+      font = "Helvetica",
+      fontSize = 35,
+      labelColor = { default = {0,0,0 }, over = { 255, 0, 0 , 0.8} },
+    }
+  )
+
+  playButton.x = display.contentCenterX + 500
+  playButton.y = display.contentCenterY + 430
+  sceneGroup:insert(playButton)
+
 
   local lessonsButton = display.newText(sceneGroup, "Back to lessons", display.contentCenterX - 500, display.contentCenterY - 450, native.systemFont, 44)
   lessonsButton:setFillColor(0, 0, 0)
 
 
-	playButton:addEventListener("tap", gotoGame)
+
   lessonsButton:addEventListener("tap", gotoLessons)
+
+  local backButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 184,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = gotoWhileLessonText,
+      label = "Back",
+      font = "Helvetica",
+      fontSize = 30,
+      labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 0, 0 , 0.8} },
+    }
+  )
+
+  backButton.x = display.contentCenterX - 500
+  backButton.y = display.contentCenterY + 430
+  sceneGroup:insert(backButton)
 
   -- 1
 
@@ -228,6 +276,7 @@ function scene:show( event )
 
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
+      display.setDefault( "background", 245,245,220, 1 )
 
 	end
 end

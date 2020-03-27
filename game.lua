@@ -591,9 +591,11 @@ local function onTap(event)
     if(objectsOnScreen[2].x == 700) then -- if bus is on the right
       transition.to(objectsOnScreen[2], {x=200, y=750, time=2000}) -- move left
       busPos = "left"
+      objectTappedOn = "busLeft"
     else
       transition.to(objectsOnScreen[2], {x=700, y=750, time=2000}) -- move right
       busPos = "right"
+      objectTappedOn = "busRight"
     end
   elseif objectTappedOn == "sun" then
     object.isVisible = false

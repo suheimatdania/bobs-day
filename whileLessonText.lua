@@ -1,5 +1,7 @@
+-- this is the text which gives the actual information on While loops
 
 local composer = require( "composer" )
+local widget = require( "widget" )
 
 local scene = composer.newScene()
 
@@ -7,7 +9,16 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+local function gotoWhile( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    composer.gotoScene("oldWhile", {time=800, effect="crossFade"})
+  end
+end
 
+local function gotoLessons()
+  composer.gotoScene("lessons", {time=800, effect="crossFade"})
+end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -20,6 +31,49 @@ function scene:create( event )
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
   display.setDefault( "background",  245,245,220, 1 )
+
+  local lessonsButton = display.newText(sceneGroup, "Back to lessons", display.contentCenterX - 500, display.contentCenterY - 450, native.systemFont, 44)
+  lessonsButton:setFillColor(0, 0, 0)
+  lessonsButton:addEventListener("tap", gotoLessons)
+
+
+  local speakingBob = display.newImageRect( sceneGroup, "./all-bobs/speaking2.png", 240, 426 )
+  speakingBob.x = display.contentCenterX - 500
+  speakingBob.y = display.contentCenterY + 300
+
+  local title = display.newText(sceneGroup, "The While Loop", display.contentCenterX, display.contentCenterY - 350, native.Helvetica, 80)
+  title:setFillColor(0.23,0.36,0.56)
+
+  local whileInfo = display.newText(sceneGroup, "A while loop is a loop that tells a computer to repeat a \nsequence of actions as long as a condition in the statement is true.\nThe syntax usually looks like this:", display.contentCenterX + 90, display.contentCenterY - 200, Helvetica, 38)
+  whileInfo:setFillColor(0, 0, 0)
+  local whileSyntax =  display.newText(sceneGroup, "While <condition is true> \n{\n  Action to execute repeatedly, \n  until the condition above is not true anymore.\n}", display.contentCenterX + 90, display.contentCenterY, Helvetica, 38)
+  whileSyntax:setFillColor(0.32,0.43,0.56)
+  local whileSyntax =  display.newText(sceneGroup, "Now, you will choose, according to some conditions around me,\nwhat I will do repeatedly in While Loops\n as a response to my surroundings!", display.contentCenterX + 150, display.contentCenterY + 220, Helvetica, 35)
+  whileSyntax:setFillColor(0,0,0)
+
+  local speechBubble = display.newImageRect( sceneGroup, "speechBubble.png", 1040, 250 )
+  speechBubble.x = display.contentCenterX + 145
+  speechBubble.y = display.contentCenterY + 250
+
+  local nextButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 184,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = gotoWhile,
+      label = "Next",
+      font = "Arial Black",
+	    fontSize = 45,
+	    labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 0, 0 , 0.8} },
+    }
+  )
+
+  nextButton.x = display.contentCenterX + 500
+  nextButton.y = display.contentCenterY + 400
+  sceneGroup:insert(nextButton)
 
 end
 

@@ -52,10 +52,15 @@ function scene:create( event )
     {
       left = 150,
       top = 200,
-      width = 300,
-      height = 150,
-      defaultFile = "backToBobButton.png",
+      width = 284,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
       onEvent = goToGame,
+      label = "Back To Bob",
+      font = "Arial Black",
+      fontSize = 35,
+      labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 0, 0 , 0.8} },
     }
   )
 
@@ -68,13 +73,13 @@ function scene:create( event )
 
   -- playButton:addEventListener("tap", gotoGame)
 
-	local whileButton = display.newText(sceneGroup, "While statements", display.contentCenterX, 700, native.systemFont, 44)
+	local whileButton = display.newText(sceneGroup, "1) While loops", display.contentCenterX, display.contentCenterY + 50, native.systemFont, 44)
 	whileButton:setFillColor(0, 0, 0)
 
-	local ifButton = display.newText( sceneGroup, "If statements", display.contentCenterX, 810, native.systemFont, 44 )
+	local ifButton = display.newText( sceneGroup, "2) If statements", display.contentCenterX, display.contentCenterY + 160, native.systemFont, 44 )
 	ifButton:setFillColor(0, 0, 0)
 
-  local forButton = display.newText( sceneGroup, "For statements (iteration)", display.contentCenterX, 910, native.systemFont, 44 )
+  local forButton = display.newText( sceneGroup, "3) For loops (iteration)", display.contentCenterX, display.contentCenterY + 270, native.systemFont, 44 )
 	forButton:setFillColor(0, 0, 0)
 
 	whileButton:addEventListener("tap", gotoWhile)
