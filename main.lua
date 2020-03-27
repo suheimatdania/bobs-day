@@ -1,3 +1,3 @@
 local composer = require("composer")
 
-composer.gotoScene( "ifLessonText")
+composer.gotoScene("menu")

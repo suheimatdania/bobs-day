@@ -21,7 +21,7 @@ local soundTable =
   bobLaugh = audio.loadSound("bob_laughing.mp3"),
   bobCheer = audio.loadSound("bob_clapping.mp3"),
   bobBye = audio.loadSound("bob_bye.mp3"),
-  bobHello = audio.loadSound(""),
+  bobHello = audio.loadSound("bob_hello.mp3"),
   bobCry = audio.loadSound("bob_crying.mp3")
 }
 
@@ -488,6 +488,7 @@ local backGroup
 local mainGroup
 local bobGroup
 
+-- navigate to lessons
 local function goToProgramming( event )
   local phase = event.phase
   if ("ended" == phase) then
@@ -495,6 +496,7 @@ local function goToProgramming( event )
   end
 end
 
+-- navigate to main menu
 local function goToMainMenu( event )
   local phase = event.phase
   if ("ended" == phase) then
@@ -502,19 +504,20 @@ local function goToMainMenu( event )
   end
 end
 
-
+-- stops the animation after one loop
 local function discreteSpriteListener(event)
   local thisSprite = event.target
   if ( event.phase == "loop" ) then
-        -- thisSprite:setSequence( "fastRun" )  -- switch to "fastRun" sequence
         thisSprite:pause()  -- play the new sequence
     end
 end
 
+-- plays bob's crying sound with delay
 local function bobCrySound (event)
   audio.play( soundTable["bobCry"], {duration = 1500 })
 end
 
+-- plays bob's yelling sound with delay
 local function bobYellSound (event)
   audio.play( soundTable["bobYell"], {duration = 1500 })
 end
@@ -532,7 +535,6 @@ local function yellSpriteListener(event)
     resumePrevAnimDance = true
   end
   if ( event.phase == "loop" ) then
-        -- thisSprite:setSequence( "fastRun" )  -- switch to "fastRun" sequence
         thisSprite:pause()  -- play the new sequence
         thisSprite.isVisible = false
         if resumePrevAnimLaugh then
@@ -625,11 +627,6 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false
           bobsOnScreen[3].isVisible = true
           currentBob = 3
-        elseif reaction == "speak" then
-          -- make bob speak
-          -- bobsOnScreen[currentBob].isVisible = false
-          -- bobsOnScreen[3].isVisible = true
-          -- currentBob = 3
         elseif reaction == "cry" then
           bobsOnScreen[currentBob].isVisible = false -- hide current bob
           cryAnimation.isVisible = true -- show the crying animation and play it
@@ -714,7 +711,7 @@ local function onTap(event)
           bobsOnScreen[currentBob].isVisible = false
           speakAnimation.isVisible = true
           speakAnimation:play()
-          audio.play(soundTable["bobHello"], {duration = 2000 } )
+          audio.play(soundTable["bobHello"], {duration = 3000 } )
         end
       end
   end
@@ -752,8 +749,6 @@ function scene:create( event )
       width = 415,
       height = 270,
       defaultFile = "programBob.png",
-      -- overFile = "platform.png",
-      -- label = "Play",
       onEvent = goToProgramming,
     }
   )
@@ -823,10 +818,11 @@ function scene:create( event )
       bobReactionTo[#bobReactionTo+1] = name
       bobReactionTo[name] = "nil" -- default bob's reaction should be none
     end
-    -- adding phsyics
-    -- addPhysics(objectToDisplay)
   end
 
+  -- local flower = display.newImageRect( mainGroup, "flower.png", 107, 150 )
+  -- flower.x = display.contentCenterX + 470
+  -- flower.y = display.contentCenterY + 390
 
   -- displaying main character bob on main group
   local bobX = display.contentCenterX + 80
@@ -912,7 +908,6 @@ function scene:create( event )
   for f=1, #objectsOnScreen do
       objectsOnScreen[f]:addEventListener("tap", onTap)
   end
-
 
 end
 

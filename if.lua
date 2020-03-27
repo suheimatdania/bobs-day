@@ -34,6 +34,7 @@ local function goToPart2( event )
   end
 end
 
+-- sets Bob's reaction to the dog barking
 local function setReactionToDog( event )
   local phase = event.phase
   if ("ended" == phase) then
@@ -46,6 +47,7 @@ local function setReactionToDog( event )
   end
 end
 
+-- sets Bob's reaction to the bus going left
 local function setReactionToBusLeft( event )
   local phase = event.phase
   if ("ended" == phase) then
@@ -58,6 +60,7 @@ local function setReactionToBusLeft( event )
   end
 end
 
+-- sets Bob's reaction to the bus going right
 local function setReactionToBusRight( event )
   local phase = event.phase
   if ("ended" == phase) then

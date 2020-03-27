@@ -8,6 +8,8 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+
+--navigate to main Bob page
 local function goToGame(event)
   local phase = event.phase
   if ("ended" == phase) then
@@ -15,10 +17,12 @@ local function goToGame(event)
   end
 end
 
+-- navigate to Lessons page
 local function gotoLessons()
   composer.gotoScene("lessons", {time=800, effect="crossFade"})
 end
 
+-- go to first page of While lesson
 local function gotoWhileLessonText( event )
   local phase = event.phase
   if ("ended" == phase) then
@@ -26,6 +30,7 @@ local function gotoWhileLessonText( event )
   end
 end
 
+-- sets the reaction to the clown according to which button was pressed
 local function setReactionToClown( event )
   local phase = event.phase
   if ("ended" == phase) then
@@ -39,6 +44,7 @@ local function setReactionToClown( event )
   end
 end
 
+-- sets the reaction to the weather according to which button was pressed
 local function setReactionWeather( event )
   local phase = event.phase
   if ("ended" == phase) then
@@ -51,7 +57,7 @@ local function setReactionWeather( event )
   end
 end
 
-
+-- sets the reaction to the speaker according to which button was pressed
 local function setReactionSpeaker( event )
   local phase = event.phase
   if ("ended" == phase) then

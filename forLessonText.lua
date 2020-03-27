@@ -1,3 +1,4 @@
+-- this is the text which gives the actual information on While loops
 
 local composer = require( "composer" )
 local widget = require( "widget" )
@@ -8,23 +9,15 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-local function gotoWhile()
-  composer.gotoScene("whileLessonText", {time=800, effect="crossFade"})
-end
-
-local function gotoIf()
-	composer.gotoScene("ifLessonText", {time=800, effect="crossFade"})
-end
-
-local function gotoFor()
-	composer.gotoScene("forLessonText", {time=800, effect="crossFade"})
-end
-
-local function goToGame( event )
+local function goToForLoops( event )
   local phase = event.phase
   if ("ended" == phase) then
-    composer.gotoScene("game", {time=800, effect="crossFade"})
+    composer.gotoScene("forLoops", {time=800, effect="crossFade"})
   end
+end
+
+local function gotoLessons()
+  composer.gotoScene("lessons", {time=800, effect="crossFade"})
 end
 
 -- -----------------------------------------------------------------------------------
@@ -34,52 +27,53 @@ end
 -- create()
 function scene:create( event )
 
-  display.setDefault( "background", 0, 100, 0, 1 )
-
 	local sceneGroup = self.view
 	-- Code here runs when the scene is first created but has not yet appeared on screen
 
-  local background = display.newImageRect( sceneGroup, "lessonsBackground.jpg", 3500, 2300 )
-	background.x = display.contentCenterX
-	background.y = display.contentCenterY
+  display.setDefault( "background",  245,245,220, 1 )
+
+  local lessonsButton = display.newText(sceneGroup, "Back to lessons", display.contentCenterX - 500, display.contentCenterY - 450, native.systemFont, 44)
+  lessonsButton:setFillColor(0, 0, 0)
+  lessonsButton:addEventListener("tap", gotoLessons)
 
 
-  local lessonsText = display.newImageRect( sceneGroup, "lessonsText.png", 1000, 650 )
-	lessonsText.x = display.contentCenterX
-	lessonsText.y = display.contentCenterY - 200
+  local speakingBob = display.newImageRect( sceneGroup, "./all-bobs/speaking2.png", 240, 426 )
+  speakingBob.x = display.contentCenterX - 500
+  speakingBob.y = display.contentCenterY + 300
 
-  local bobButton = widget.newButton(
+  local title = display.newText(sceneGroup, "The For Loop", display.contentCenterX, display.contentCenterY - 350, native.Helvetica, 80)
+  title:setFillColor(0.23,0.36,0.56)
+
+  local whileInfo = display.newText(sceneGroup, "A for loop is a loop that tells a computer to repeat a \nsequence of actions a given number of times (iterations).\nThe syntax usually looks like this:", display.contentCenterX + 90, display.contentCenterY - 200, Helvetica, 38)
+  whileInfo:setFillColor(0, 0, 0)
+  local whileSyntax =  display.newText(sceneGroup, "For <N number> of times \n{\n  Action to execute repeatedly, N times.\n}", display.contentCenterX + 90, display.contentCenterY, Helvetica, 38)
+  whileSyntax:setFillColor(0.32,0.43,0.56)
+  local whileSyntax =  display.newText(sceneGroup, "Now, you will decide, how I react to the flower releasing pollen\nin a For Loop! (I have spring allergies)", display.contentCenterX + 150, display.contentCenterY + 220, Helvetica, 35)
+  whileSyntax:setFillColor(0,0,0)
+
+  local speechBubble = display.newImageRect( sceneGroup, "speechBubble.png", 1040, 250 )
+  speechBubble.x = display.contentCenterX + 145
+  speechBubble.y = display.contentCenterY + 250
+
+  local nextButton = widget.newButton(
     {
       left = 150,
       top = 200,
-      width = 284,
+      width = 184,
       height = 100,
       defaultFile = "reactionButtonFrame.png",
       overFile = "reactionButtonFramePressed.png",
-      onEvent = goToGame,
-      label = "Back To Bob",
+      onEvent = goToForLoops,
+      label = "Next",
       font = "Arial Black",
-      fontSize = 35,
-      labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 0, 0 , 0.8} },
+	    fontSize = 45,
+	    labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 0, 0 , 0.8} },
     }
   )
 
-  bobButton.x = display.contentCenterX - 500
-  bobButton.y = display.contentCenterY - 400
-  sceneGroup:insert(bobButton)
-
-	local whileButton = display.newText(sceneGroup, "1) While loops", display.contentCenterX, display.contentCenterY + 50, native.systemFont, 44)
-	whileButton:setFillColor(0, 0, 0)
-
-	local ifButton = display.newText( sceneGroup, "2) If statements", display.contentCenterX, display.contentCenterY + 160, native.systemFont, 44 )
-	ifButton:setFillColor(0, 0, 0)
-
-  local forButton = display.newText( sceneGroup, "3) For loops (iteration)", display.contentCenterX, display.contentCenterY + 270, native.systemFont, 44 )
-	forButton:setFillColor(0, 0, 0)
-
-	whileButton:addEventListener("tap", gotoWhile)
-	ifButton:addEventListener("tap", gotoIf)
-  forButton:addEventListener("tap", gotoFor)
+  nextButton.x = display.contentCenterX + 500
+  nextButton.y = display.contentCenterY + 400
+  sceneGroup:insert(nextButton)
 
 end
 
