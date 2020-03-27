@@ -19,37 +19,41 @@ end
 local function setReactionToClown( event )
   local phase = event.phase
   if ("ended" == phase) then
+    -- event.target._view._labelColor = { 255, 0, 0, 1.0 }
     local requiredReaction = event.target:getLabel()
-    print(requiredReaction)
+      if(requiredReaction == "Laugh") then
+        bobReactionTo["clown"] = "laugh"
+      elseif(requiredReaction == "Cheer") then
+        bobReactionTo["clown"] = "cheer"
+      end
   end
 end
 
--- local function setReactionToClown(event)
---   local requiredReaction = event.target.text
---   if(requiredReaction == "Laugh") then
---     bobReactionTo["clown"] = "laugh"
---   elseif(requiredReaction == "Cheer") then
---     bobReactionTo["clown"] = "cheer"
---   end
--- end
-
-local function setReactionWeather(event)
-  local requiredReaction = event.target.text
-  if(requiredReaction == "Happy") then
-    bobReactionTo["sun"] = "smile"
-  elseif requiredReaction == "Sad" then
-    bobReactionTo["sun"] = "sad"
+local function setReactionWeather( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    local requiredReaction = event.target:getLabel()
+      if(requiredReaction == "Happy") then
+        bobReactionTo["sun"] = "smile"
+      elseif requiredReaction == "Sad" then
+        bobReactionTo["sun"] = "sad"
+      end
   end
 end
 
-local function setReactionSpeaker(event)
-  local requiredReaction = event.target.text
-  if(requiredReaction == "Dancing") then
-    bobReactionTo["speaker"] = "dance"
-  elseif requiredReaction == "Singing" then
-    bobReactionTo["speaker"] = "sing"
+
+local function setReactionSpeaker( event )
+  local phase = event.phase
+  if ("ended" == phase) then
+    local requiredReaction = event.target:getLabel()
+      if(requiredReaction == "Dancing") then
+        bobReactionTo["speaker"] = "dance"
+      elseif requiredReaction == "Singing" then
+        bobReactionTo["speaker"] = "sing"
+      end
   end
 end
+
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -64,10 +68,10 @@ function scene:create( event )
   display.setDefault( "background", 245,245,220, 1 )
 
   local playButton = display.newText(sceneGroup, "Go to Bob!", display.contentCenterX + 500, display.contentCenterY + 400, native.systemFont, 44)
-  playButton:setFillColor(255, 255, 255)
+  playButton:setFillColor(0, 0, 0)
 
-  local lessonsButton = display.newText(sceneGroup, "Back to lessons", display.contentCenterX - 500, display.contentCenterY - 400, native.systemFont, 44)
-  lessonsButton:setFillColor(255, 255, 255)
+  local lessonsButton = display.newText(sceneGroup, "Back to lessons", display.contentCenterX - 500, display.contentCenterY - 450, native.systemFont, 44)
+  lessonsButton:setFillColor(0, 0, 0)
 
 
 	playButton:addEventListener("tap", gotoGame)
@@ -75,63 +79,140 @@ function scene:create( event )
 
   -- 1
 
-  local clownText = display.newText(sceneGroup, "While the clown juggles, bob will...", display.contentCenterX, display.contentCenterY - 300, native.systemFont, 44)
-  clownText:setFillColor(0, 0, 0)
+  local clownText = display.newText(sceneGroup, "1) While the clown juggles, bob will...", display.contentCenterX, display.contentCenterY - 340, Helvetica, 48)
+  clownText:setFillColor(0.32,0.43,0.56)
 
   local laughButton = widget.newButton(
     {
       left = 150,
       top = 200,
-      width = 350,
-      height = 190,
-      defaultFile = "./reactionButtons/laughButton.png",
-      overFile = "./reactionButtons/laughPressed.png",
+      width = 184,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
       onEvent = setReactionToClown,
-      name = "laugh"
+      label = "Laugh",
+      font = "Arial Black",
+	    fontSize = 45,
+	    labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 0, 0 , 0.8} },
     }
   )
 
   laughButton.x = display.contentCenterX
-  laughButton.y = display.contentCenterY - 200
-  laughButton:setLabel("laugh")
+  laughButton.y = display.contentCenterY - 250
   sceneGroup:insert(laughButton)
 
-	-- local laughButton = display.newText(sceneGroup, "Laugh", display.contentCenterX, display.contentCenterY - 200, native.systemFont, 44)
-	-- laughButton:setFillColor(0,0,205)
 
-	local nillButton = display.newText( sceneGroup, "Cheer", display.contentCenterX, display.contentCenterY - 100, native.systemFont, 44 )
-	nillButton:setFillColor(0,0,205)
+  local cheerButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 184,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = setReactionToClown,
+      label = "Cheer",
+      font = "Arial Black",
+	    fontSize = 45,
+	    labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 255, 255 , 0.8} },
+    }
+  )
 
-  laughButton:addEventListener("tap", setReactionToClown)
-  nillButton:addEventListener("tap", setReactionToClown)
+  cheerButton.x = display.contentCenterX
+  cheerButton.y = display.contentCenterY - 140
+  sceneGroup:insert(cheerButton)
 
   -- 2
 
-  local weatherText = display.newText(sceneGroup, "While the weather is bad, Bob is", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
-  weatherText:setFillColor(0, 0, 0)
+  local weatherText = display.newText(sceneGroup, "2) While the weather is bad, Bob is", display.contentCenterX, display.contentCenterY - 40, Helvetica, 48)
+  weatherText:setFillColor(0.55,0.32,0.63)
 
-  local smileButton = display.newText(sceneGroup, "Happy", display.contentCenterX, display.contentCenterY +100, native.systemFont, 44)
-  smileButton:setFillColor(0,0,205)
+  local happyButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 184,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = setReactionWeather,
+      label = "Happy",
+      font = "Arial Black",
+	    fontSize = 45,
+	    labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 255, 255 , 0.8} },
+    }
+  )
 
-  local sadButton = display.newText( sceneGroup, "Sad", display.contentCenterX, display.contentCenterY + 200, native.systemFont, 44 )
-  sadButton:setFillColor(0,0,205)
+  happyButton.x = display.contentCenterX
+  happyButton.y = display.contentCenterY + 40
+  sceneGroup:insert(happyButton)
 
-  smileButton:addEventListener("tap", setReactionWeather)
-  sadButton:addEventListener("tap", setReactionWeather)
+  local sadButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 184,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = setReactionWeather,
+      label = "Sad",
+      font = "Arial Black",
+	    fontSize = 45,
+	    labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 255, 255 , 0.8} },
+    }
+  )
+
+  sadButton.x = display.contentCenterX
+  sadButton.y = display.contentCenterY + 150
+  sceneGroup:insert(sadButton)
 
   --3
 
-  local speakerText = display.newText(sceneGroup, "While the speaker is playing music, Bob is", display.contentCenterX, display.contentCenterY + 300, native.systemFont, 44)
-  speakerText:setFillColor(0, 0, 0)
+  local speakerText = display.newText(sceneGroup, "3) While the speaker is playing music, Bob is", display.contentCenterX, display.contentCenterY + 245, Helvetica, 48)
+  speakerText:setFillColor(0.22,0.38,0.20)
 
-  local danceButton = display.newText(sceneGroup, "Dancing", display.contentCenterX, display.contentCenterY +350, native.systemFont, 44)
-  danceButton:setFillColor(0, 0, 0)
+  local danceButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 220,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = setReactionSpeaker,
+      label = "Dancing",
+      font = "Arial Black",
+      fontSize = 45,
+      labelColor = { default = { 0}, over = { 255, 255, 255 , 0.8} },
+    }
+  )
 
-  local singButton = display.newText( sceneGroup, "Singing", display.contentCenterX, display.contentCenterY + 400, native.systemFont, 44 )
-  singButton:setFillColor(0,0,205)
+  danceButton.x = display.contentCenterX
+  danceButton.y = display.contentCenterY + 330
+  sceneGroup:insert(danceButton)
 
-  danceButton:addEventListener("tap", setReactionSpeaker)
-  singButton:addEventListener("tap", setReactionSpeaker)
+
+  local singButton = widget.newButton(
+    {
+      left = 150,
+      top = 200,
+      width = 220,
+      height = 100,
+      defaultFile = "reactionButtonFrame.png",
+      overFile = "reactionButtonFramePressed.png",
+      onEvent = setReactionSpeaker,
+      label = "Singing",
+      font = "Arial Black",
+      fontSize = 45,
+      labelColor = { default = { 0, 0, 0, 1.0 }, over = { 255, 255, 255 , 0.8} },
+    }
+  )
+
+  singButton.x = display.contentCenterX
+  singButton.y = display.contentCenterY + 440
+  sceneGroup:insert(singButton)
 
 end
 
